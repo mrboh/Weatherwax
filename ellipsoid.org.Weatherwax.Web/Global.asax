@@ -1,0 +1,1 @@
+<%@ Application Inherits="ellipsoid.org.Weatherwax.Web.Global" %>

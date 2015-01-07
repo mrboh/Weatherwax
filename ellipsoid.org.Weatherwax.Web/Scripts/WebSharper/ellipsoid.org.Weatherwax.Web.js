@@ -1,0 +1,258 @@
+(function()
+{
+ var Global=this,Runtime=this.IntelliFactory.Runtime,jQuery,WebSharper,Html,Default,List,Remoting,Concurrency,Operators,ellipsoid,org,Weatherwax,Core,ClientDirectives,T,angular,Web,Configuration,AngularDependencies,AngularConfiguration,AngularRouter,AngularControllers,AngularModules;
+ Runtime.Define(Global,{
+  ellipsoid:{
+   org:{
+    Weatherwax:{
+     Web:{
+      AngularConfiguration:{
+       UIRouterConfiguration:Runtime.Field(function()
+       {
+        return["$urlMatcherFactoryProvider",function(urlMatcherFactory)
+        {
+         urlMatcherFactory.caseInsensitive(true);
+         urlMatcherFactory.strictMode(false);
+         return;
+        }];
+       }),
+       UrlConfiguration:Runtime.Field(function()
+       {
+        return["$locationProvider",function(locationProvider)
+        {
+         return locationProvider.html5Mode(false).hashPrefix("!");
+        }];
+       })
+      },
+      AngularControllers:{
+       AboutController:Runtime.Field(function()
+       {
+        return["$scope",function()
+        {
+         var chart,returnVal,returnVal1,returnVal2,returnVal3,returnVal4,returnVal5;
+         chart=jQuery("#chart");
+         returnVal={};
+         returnVal.text="Monthly Average Temperature";
+         returnVal.x=-20;
+         returnVal1={};
+         returnVal1.text="Source: WorldClimate.com";
+         returnVal1.x=-20;
+         returnVal2={};
+         returnVal2.categories=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+         returnVal3={};
+         returnVal3.title={
+          text:"Temperature (°C)"
+         };
+         returnVal3.plotLines=[{
+          value:0,
+          width:1,
+          color:"#808080"
+         }];
+         returnVal4={};
+         returnVal4.valueSuffix="°C";
+         returnVal5={};
+         returnVal5.layout="vertical";
+         returnVal5.align="right";
+         returnVal5.verticalAlign="middle";
+         returnVal5.borderWidth=0;
+         return chart.highcharts({
+          title:returnVal,
+          subtitle:returnVal1,
+          xAxis:returnVal2,
+          yAxis:returnVal3,
+          tooltip:returnVal4,
+          legend:returnVal5,
+          series:[{
+           name:"Tokyo",
+           data:[7,6.9,9.5,14.5,18.2,21.5,25.2,26.5,23.3,18.3,13.9,9.6]
+          },{
+           name:"New York",
+           data:[-0.2,0.8,5.7,11.3,17,22,24.8,24.1,20.1,14.1,8.6,2.5]
+          },{
+           name:"Berlin",
+           data:[-0.9,0.6,3.5,8.4,13.5,17,18.6,17.9,14.3,9,3.9,1]
+          },{
+           name:"London",
+           data:[3.9,4.2,5.7,8.5,11.9,15.2,17,16.6,14.2,10.3,6.6,4.8]
+          }]
+         });
+        }];
+       }),
+       BaseController:Runtime.Field(function()
+       {
+        return["$scope","$rootScope",Runtime.Tupled(function(tupledArg)
+        {
+         return tupledArg[1].$on("$viewContentLoaded",function()
+         {
+          var element;
+          if(jQuery("#compositionComplete").length===0)
+           {
+            element=Default.Span(List.ofArray([Default.Id("compositionComplete")]));
+            jQuery("body").append(element.Body);
+            return;
+           }
+          else
+           {
+            return null;
+           }
+         });
+        })];
+       }),
+       ErrorController:Runtime.Field(function()
+       {
+        return["$scope",function()
+        {
+         return null;
+        }];
+       }),
+       HomeController:Runtime.Field(function()
+       {
+        return["$scope",function()
+        {
+         return null;
+        }];
+       }),
+       MusicController:Runtime.Field(function()
+       {
+        return["$scope",function(scope)
+        {
+         var f,arg00,t;
+         f=function()
+         {
+          var x,f1;
+          x=Remoting.Async("ellipsoid.org.Weatherwax.Web:0",[]);
+          f1=function(_arg1)
+          {
+           scope.songs=_arg1;
+           scope.$apply();
+           return Concurrency.Return(null);
+          };
+          return Concurrency.Bind(x,f1);
+         };
+         arg00=Concurrency.Delay(f);
+         t={
+          $:0
+         };
+         return Concurrency.Start(arg00,t);
+        }];
+       })
+      },
+      AngularDependencies:{
+       Router:Runtime.Field(function()
+       {
+        return"ngRoute";
+       }),
+       UIRouter:Runtime.Field(function()
+       {
+        return"ui.router";
+       })
+      },
+      AngularEntryPoint:Runtime.Class({
+       get_Body:function()
+       {
+        var x;
+        x=Operators.add(Default.Div(List.ofArray([Default.Attr().Class("angular-sitelet-root"),ClientDirectives.NgController("BaseController")])),List.ofArray([ClientDirectives.UIView(Runtime.New(T,{
+         $:0
+        }))]));
+        Operators.OnAfterRender(function(el)
+        {
+         angular.bootstrap(el.Body,[Configuration.AppName()]);
+        },x);
+        return x;
+       }
+      }),
+      AngularModules:{
+       SiteletApp:Runtime.Field(function()
+       {
+        return angular.module(Configuration.AppName(),[AngularDependencies.UIRouter()]).config(AngularConfiguration.UrlConfiguration()).config(AngularConfiguration.UIRouterConfiguration()).config(AngularRouter.RouteConfiguration()).controller("BaseController",AngularControllers.BaseController()).controller("HomeController",AngularControllers.HomeController()).controller("AboutController",AngularControllers.AboutController()).controller("MusicController",AngularControllers.MusicController()).controller("ErrorController",AngularControllers.ErrorController());
+       })
+      },
+      AngularRouter:{
+       RouteConfiguration:Runtime.Field(function()
+       {
+        return["$stateProvider","$urlRouterProvider",Runtime.Tupled(function(tupledArg)
+        {
+         var urlRouterProvider;
+         urlRouterProvider=tupledArg[1];
+         tupledArg[0].state("master",{
+          "abstract":true,
+          templateUrl:"Template/Master"
+         }).state("master.home",{
+          url:"^/",
+          templateUrl:"Template/Home",
+          controller:"HomeController"
+         }).state("master.about",{
+          url:"^/about",
+          templateUrl:"Template/About",
+          controller:"AboutController"
+         }).state("master.music",{
+          url:"^/music",
+          templateUrl:"Template/Music",
+          controller:"MusicController"
+         }).state("master.error",{
+          url:"^/error/{id}",
+          templateUrl:function(p)
+          {
+           return"Template/Error/"+Global.String(p.id);
+          },
+          controller:"ErrorController"
+         });
+         urlRouterProvider.when("","/");
+         urlRouterProvider.otherwise("/error/404");
+         return;
+        })];
+       })
+      },
+      Configuration:{
+       AppName:Runtime.Field(function()
+       {
+        return"siteletApp";
+       })
+      }
+     }
+    }
+   }
+  }
+ });
+ Runtime.OnInit(function()
+ {
+  jQuery=Runtime.Safe(Global.jQuery);
+  WebSharper=Runtime.Safe(Global.IntelliFactory.WebSharper);
+  Html=Runtime.Safe(WebSharper.Html);
+  Default=Runtime.Safe(Html.Default);
+  List=Runtime.Safe(WebSharper.List);
+  Remoting=Runtime.Safe(WebSharper.Remoting);
+  Concurrency=Runtime.Safe(WebSharper.Concurrency);
+  Operators=Runtime.Safe(Html.Operators);
+  ellipsoid=Runtime.Safe(Global.ellipsoid);
+  org=Runtime.Safe(ellipsoid.org);
+  Weatherwax=Runtime.Safe(org.Weatherwax);
+  Core=Runtime.Safe(Weatherwax.Core);
+  ClientDirectives=Runtime.Safe(Core.ClientDirectives);
+  T=Runtime.Safe(List.T);
+  angular=Runtime.Safe(Global.angular);
+  Web=Runtime.Safe(Weatherwax.Web);
+  Configuration=Runtime.Safe(Web.Configuration);
+  AngularDependencies=Runtime.Safe(Web.AngularDependencies);
+  AngularConfiguration=Runtime.Safe(Web.AngularConfiguration);
+  AngularRouter=Runtime.Safe(Web.AngularRouter);
+  AngularControllers=Runtime.Safe(Web.AngularControllers);
+  return AngularModules=Runtime.Safe(Web.AngularModules);
+ });
+ Runtime.OnLoad(function()
+ {
+  Configuration.AppName();
+  AngularRouter.RouteConfiguration();
+  AngularModules.SiteletApp();
+  AngularDependencies.UIRouter();
+  AngularDependencies.Router();
+  AngularControllers.MusicController();
+  AngularControllers.HomeController();
+  AngularControllers.ErrorController();
+  AngularControllers.BaseController();
+  AngularControllers.AboutController();
+  AngularConfiguration.UrlConfiguration();
+  AngularConfiguration.UIRouterConfiguration();
+  return;
+ });
+}());
