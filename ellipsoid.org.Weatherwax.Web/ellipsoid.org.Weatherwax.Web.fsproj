@@ -82,7 +82,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>65237</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44301/</IISUrl>
+          <IISUrl>https://localhost:44302/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -119,9 +119,8 @@
     <Error Condition="Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
   </Target>
   <ItemGroup>
-    <Compile Include="SiteDefinition.fs" />
+    <Compile Include="Configuration.fs" />
     <Compile Include="Remoting.fs" />
-    <Compile Include="AngularDependencies.fs" />
     <Compile Include="AngularScopes.fs" />
     <Compile Include="AngularTemplates.fs" />
     <Compile Include="AngularConfiguration.fs" />

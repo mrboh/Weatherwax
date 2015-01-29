@@ -1,14 +1,13 @@
 namespace ellipsoid.org.Weatherwax.Core
 
 open ellipsoid.org.SharpAngles
+open ellipsoid.org.Weatherwax.Core
 open IntelliFactory.Html
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Sitelets
 open System
 open System.IO
 open System.Web
-
-module WsClientOps = IntelliFactory.WebSharper.Html.Operators
 
 type Action<'T> =
     | [<CompiledName "">] Index
@@ -20,21 +19,14 @@ type WebSharperTemplateBase =
 type AngularTemplateBase =
     { Content: Content.HtmlElement list }
 
-type ISettings<'T when 'T : equality> =
-    abstract member GenerateSnapshot: baseUrl: string -> fragment: string -> string
-    abstract member MainHtmlPath: string
-    abstract member ClientControl: Web.Control
-    abstract member TemplateHtmlPath: string
-    abstract member TemplateImplementation: 'T -> Element<_> list
-
-type AngularWebsite<'T when 'T : equality> (settings: ISettings<'T>) =
+type AngularWebsite<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> (settings: ISettings<'TTemplate,'TController>) =
     let appTemplate =
         Content.Template<WebSharperTemplateBase>(settings.MainHtmlPath)
             .With ("body", fun template -> template.Body)
     let angularTemplate =
         Content.Template<AngularTemplateBase>(settings.TemplateHtmlPath)
             .With ("content", fun template -> template.Content)
-    interface IWebsite<Action<'T>> with
+    interface IWebsite<Action<'TTemplate>> with
         member this.Sitelet = 
             Sitelet.Infer <| function
                 | Index ->
@@ -53,9 +45,23 @@ type AngularWebsite<'T when 'T : equality> (settings: ISettings<'T>) =
                                       use streamWriter = new StreamWriter (stream)
                                       streamWriter.Write snapshot }
                 | Template templateId ->
-                    Content.WithTemplate angularTemplate <| fun ctx ->
-                        let headers = ctx.Request.Headers
-                        { Content = settings.TemplateImplementation templateId }
+                    let templateInfo = settings.TemplateImplementation templateId
+                    match templateInfo with
+                        | Inline templateContent ->
+                            Content.WithTemplate angularTemplate <| fun ctx ->
+                                let headers = ctx.Request.Headers
+                                { Content = templateContent }
+                        | Static staticType ->
+                            CustomContent <| fun context ->
+                                { Status = Http.Status.Ok  
+                                  Headers = [ Http.Header.Custom "Content-Type" "text/ng-template" ]
+                                  WriteBody = fun stream ->
+                                      let withTrailingSlash (s: string) = match s with | withSlash when withSlash.EndsWith ("/") -> withSlash | withoutSlash -> withoutSlash + "/"
+                                      let getLocalPath p = HttpContext.Current.Server.MapPath (withTrailingSlash settings.FileTemplateRootPath + p)
+                                      use streamWriter = new StreamWriter (stream)
+                                      match staticType with
+                                          | Html filename ->
+                                              let localPath = getLocalPath filename
+                                              use textReader = new StreamReader (localPath)
+                                              streamWriter.Write (textReader.ReadToEnd ()) }
         member this.Actions = []
-
-    

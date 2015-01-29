@@ -4,51 +4,46 @@ declare module ellipsoid {
             module Web {
                 module AngularModules {
                     var SiteletApp : {
-                        (): __ABBREV.__SharpAngles.Module;
+                        (): void;
                     };
                 }
                 module AngularRouter {
                     interface ErrorRouteParameters {
                         id: number;
                     }
+                    var TemplateUrl : {
+                        (t: __ABBREV.__AngularTemplates.AngularTemplate): string;
+                    };
+                    var ControllerName : {
+                        (controller: __ABBREV.__AngularControllers.AngularController): string;
+                    };
                     var RouteConfiguration : {
-                        (): any;
+                        (): __ABBREV.__WebSharper.ObjectProxy;
+                    };
+                }
+                module AngularTemplates {
+                    interface AngularTemplate {
+                    }
+                    var TemplateRelativePath : {
+                        (_arg1: __ABBREV.__AngularTemplates.AngularTemplate): string;
                     };
                 }
                 module AngularControllers {
+                    interface AngularController {
+                    }
                     interface ErrorRouteParameters {
                         id: number;
                     }
-                    var BaseController : {
-                        (): any;
-                    };
-                    var HomeController : {
-                        (): any;
-                    };
-                    var AboutController : {
-                        (): any;
-                    };
-                    var MusicController : {
-                        (): any;
-                    };
-                    var ErrorController : {
-                        (): any;
+                    var ControllerConfiguration : {
+                        (): __ABBREV.__Core.ControllerConfiguration<__ABBREV.__AngularControllers.AngularController>;
                     };
                 }
                 module AngularConfiguration {
                     var UrlConfiguration : {
-                        (): any;
+                        (): __ABBREV.__WebSharper.ObjectProxy;
                     };
                     var UIRouterConfiguration : {
-                        (): any;
-                    };
-                }
-                module AngularDependencies {
-                    var Router : {
-                        (): string;
-                    };
-                    var UIRouter : {
-                        (): string;
+                        (): __ABBREV.__WebSharper.ObjectProxy;
                     };
                 }
                 module Remoting {
@@ -64,24 +59,14 @@ declare module ellipsoid {
                         (): string;
                     };
                 }
-                interface AngularTemplate {
-                }
             }
-        }
-    }
-}
-declare module IntelliFactory {
-    module WebSharper {
-        interface F2<_T1, _T2, _T3> {
-            (a1: _T1, a2: _T2): _T3;
-            (tuple: {
-                0: _T1;
-                1: _T2;
-            }): _T3;
         }
     }
 }
 declare module __ABBREV {
     
-    export import __SharpAngles = ellipsoid.org.SharpAngles;
+    export import __AngularTemplates = ellipsoid.org.Weatherwax.Web.AngularTemplates;
+    export import __AngularControllers = ellipsoid.org.Weatherwax.Web.AngularControllers;
+    export import __WebSharper = IntelliFactory.WebSharper;
+    export import __Core = ellipsoid.org.Weatherwax.Core;
 }

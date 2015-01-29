@@ -1,51 +1,32 @@
 ﻿namespace ellipsoid.org.Weatherwax.Web
 
+open CacheByAttribute
 open ellipsoid.org.SharpAngles
+open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.ClientDirectives
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Html
 open IntelliFactory.WebSharper.Sitelets
+open System
+open System.Diagnostics
+open System.IO
+open System.Web
+open System.Web.Configuration
 
-type AngularTemplate =
-    | Master
-    | Home
-    | About
-    | Music
-    | Error of int
+(*
+    Note
+    ====
+
+    If copying this sample application, don't forget to remove the references to the following assemblies
+    and install the corresponding NuGet packages:
+
+    - ellipsoid.org.Weatherwax.Core
+*)
 
 module Configuration =
-    open CacheByAttribute
-    open ellipsoid.org.SharpAngles
-    open ellipsoid.org.Weatherwax.Core
-    open System
-    open System.Diagnostics
-    open System.IO
-    open System.Web
-    open System.Web.Configuration
 
     [<JavaScript>]
     let AppName = "siteletApp"
-
-    let SampleSettings =
-        let appConfig = WebConfigurationManager.OpenWebConfiguration(null).AppSettings.Settings
-
-        let boolSetting setting defaultValue =
-            match appConfig.[setting] with
-            | null -> defaultValue
-            | s ->
-                match bool.TryParse(s.Value) with
-                | (true, b) -> b
-                | (false, _) -> defaultValue
-
-        let stringSetting setting defaultValue =
-            match appConfig.[setting] with
-            | null -> defaultValue
-            | s -> s
-
-        ()
-
-        //        { new ISettings with
-        //              member this.RequireTemplateAuthentication = boolSetting "requireTemplateAuthentication" true }
 
     [<Cache(ExpiryHours = 24)>]
     let PhantomJsSnapshot baseUrl fragment =

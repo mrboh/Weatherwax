@@ -4,6 +4,8 @@ open ellipsoid.org.SharpAngles
 open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.ClientDirectives
 open ellipsoid.org.Weatherwax.Web.Configuration
+open ellipsoid.org.Weatherwax.Web.AngularControllers
+open ellipsoid.org.Weatherwax.Web.AngularTemplates
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Html
 open IntelliFactory.WebSharper.Sitelets
@@ -19,15 +21,18 @@ type private AngularEntryPoint () =
         :> _
         
 type private Settings () =
-    interface ISettings<AngularTemplate> with
+    interface ISettings<AngularTemplate,AngularController> with
         member this.ClientControl = new AngularEntryPoint () :> _
+        member this.ControllerConfiguration = ControllerConfiguration
+        member this.FileTemplateRootPath = "~/App_Data/Template"
         member this.GenerateSnapshot baseUrl fragment = PhantomJsSnapshot baseUrl fragment
         member this.MainHtmlPath = "~/Main.html"
         member this.TemplateHtmlPath = "~/Template.html"
-        member this.TemplateImplementation templateId = AngularTemplates.TemplateImplementation templateId
+        member this.TemplateImplementation templateId = TemplateImplementation templateId
+        member this.TemplateRelativePath template = TemplateRelativePath template
 
 type Website () =
-    inherit AngularWebsite<AngularTemplate> (Settings ())
+    inherit AngularWebsite<AngularTemplate,AngularController> (Settings ())
     
 type Global() =
     inherit System.Web.HttpApplication()

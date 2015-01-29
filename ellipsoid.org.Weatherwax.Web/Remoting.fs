@@ -1,5 +1,6 @@
 namespace ellipsoid.org.Weatherwax.Web
 
+open ellipsoid.org.Weatherwax.Core
 open IntelliFactory.WebSharper
 
 module Remoting =
@@ -10,7 +11,7 @@ module Remoting =
           Album: string
           PlayCount: int }
 
-    [<Remote>]
+    [<Rpc>]
     let GetSongs () =
         async {
             return [|

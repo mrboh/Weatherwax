@@ -53,6 +53,9 @@
     <Error Condition="!Exists('..\packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets'))" />
   </Target>
   <ItemGroup>
+    <Compile Include="Dependencies.fs" />
+    <Compile Include="CoreDefinition.fs" />
+    <Compile Include="Utilities.fs" />
     <Compile Include="Directives.fs" />
     <Compile Include="Website.fs" />
     <Content Include="packages.config" />

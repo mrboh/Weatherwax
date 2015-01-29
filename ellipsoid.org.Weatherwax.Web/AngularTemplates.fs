@@ -1,19 +1,38 @@
 ﻿namespace ellipsoid.org.Weatherwax.Web
 
+open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.ServerDirectives
+open ellipsoid.org.Weatherwax.Web
 open ellipsoid.org.Weatherwax.Web.AngularScopes
 open ellipsoid.org.Weatherwax.Web.Remoting
 open IntelliFactory.Html
+open IntelliFactory.WebSharper
 open Microsoft.FSharp.Linq
 open System.Linq
 open System.Linq.Expressions
 
 module AngularTemplates =
 
+    type AngularTemplate =
+        | Master
+        | Home
+        | About
+        | Music
+        | Error of int
+
+    [<JavaScript>]
+    let TemplateRelativePath =
+        function
+            | Master -> "Master"
+            | Home -> "Home"
+            | About -> "About"
+            | Music -> "Music"
+            | Error x -> sprintf "Error/%d" x
+
     let TemplateImplementation =
         function
-            | Master ->
-                [
+            | Master -> 
+                Inline [
                     Div [ Id "master" ] -< [
                         H1 [ Class "ui block header teal" ] -< [ Text "Weatherwax: WebSharper + Angular" ]
                         Div [ Class "ui menu" ] -< [
@@ -28,9 +47,9 @@ module AngularTemplates =
                     ]
                 ]
             | Home -> 
-                [ Div [ Text "This is the home template" ] ]
+                Static <| Html "Home.html"
             | About -> 
-                [ 
+                Inline [ 
                     Div [ Text ("This template demonstrates the use of other WebSharper extensions inside " +
                                 "Angular. The AboutController instantiates a chart inside the #chart tag " +
                                 "when it is first loaded.") ] 
@@ -40,7 +59,7 @@ module AngularTemplates =
             | Music ->
                 let musicRepeater = NgRepeater <@ fun (scope: MusicScope) -> scope.songs @>
 
-                [ 
+                Inline [ 
                     Div [ Text ("This template demonstrates the interaction between Angular and WebSharper's " +
                                 "RPC mechanism by loading a list of songs via the controller and binding " +
                                 "the list to the view. It also demonstrates the use of a type-safe ng-repeat " +
@@ -64,4 +83,4 @@ module AngularTemplates =
                     ]
                 ]
             | Error errorCode -> 
-                [ Div [ sprintf "Oh dear, something has gone horribly wrong (Error Code %d)" errorCode |> Text ] ]
+                Inline [ Div [ sprintf "Oh dear, something has gone horribly wrong (Error Code %d)" errorCode |> Text ] ]

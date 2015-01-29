@@ -19,6 +19,92 @@ declare module ellipsoid {
                         (x: string): __ABBREV.__Html.IPagelet;
                     };
                 }
+                module Utilities {
+                    var Module_Controllers : {
+                        <_M1>(_this: __ABBREV.__SharpAngles.Module, config: __ABBREV.__Core.ControllerConfiguration<_M1>): void;
+                    };
+                }
+                module Dependencies {
+                    module Other {
+                        var StateParams : {
+                            <_M1>(): __ABBREV.__Core.Dependency<_M1>;
+                        };
+                    }
+                    module Providers {
+                        var Location : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__SharpAngles.LocationProvider>;
+                        };
+                        var State : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__UI.StateProvider>;
+                        };
+                        var UrlMatcherFactory : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__UI.UrlMatcherFactory>;
+                        };
+                        var UrlRouter : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__UI.UrlRouterProvider>;
+                        };
+                    }
+                    module Services {
+                        var CustomScope : {
+                            <_M1>(): __ABBREV.__Core.Dependency<_M1>;
+                        };
+                        var RootScope : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__SharpAngles.RootScopeService>;
+                        };
+                        var Scope : {
+                            (): __ABBREV.__Core.Dependency<any>;
+                        };
+                        var State : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__UI.StateService>;
+                        };
+                    }
+                    var Router : {
+                        (): string;
+                    };
+                    var UIRouter : {
+                        (): string;
+                    };
+                }
+                interface Dependency<_T1> {
+                    get_JavascriptName(): string;
+                }
+                interface AngularExpression0 {
+                    Resolve<_M1>(lambda: {
+                        (): _M1;
+                    }): __ABBREV.__WebSharper.ObjectProxy;
+                }
+                interface AngularExpression1<_T1> {
+                    Resolve<_M1>(lambda: {
+                        (x: _T1): _M1;
+                    }): __ABBREV.__WebSharper.ObjectProxy;
+                }
+                interface AngularExpression2<_T1, _T2> {
+                    Resolve<_M1>(lambda: __ABBREV.__WebSharper.F2<_T1, _T2, _M1>): __ABBREV.__WebSharper.ObjectProxy;
+                }
+                interface ControllerInfo<_T1> {
+                    Controller: _T1;
+                    Name: string;
+                    Implementation: __ABBREV.__WebSharper.ObjectProxy;
+                }
+                interface ControllerConfiguration<_T1> {
+                    DefineController<_M1>(controller: _T1, name: string, implementation: _M1): __ABBREV.__Core.ControllerConfiguration<_T1>;
+                    ControllerName(controller: _T1): string;
+                    get_Controllers(): __ABBREV.__List.T<any>;
+                }
+                interface TemplateFile {
+                }
+                interface Template<_T1> {
+                }
+                interface ISettings<_T1, _T2> {
+                    GenerateSnapshot(baseUrl: string, fragment: string): string;
+                    TemplateRelativePath(x0: _T1): string;
+                    TemplateImplementation<_M1>(x0: _T1): __ABBREV.__Core.Template<_M1>;
+                    get_ClientControl(): __ABBREV.__Web.Control;
+                    get_ControllerConfiguration(): __ABBREV.__Core.ControllerConfiguration<_T2>;
+                    get_FileTemplateRootPath(): string;
+                    get_MainHtmlPath(): string;
+                    get_TemplateHtmlPath(): string;
+                }
                 interface Action<_T1> {
                 }
                 interface WebSharperTemplateBase {
@@ -27,16 +113,20 @@ declare module ellipsoid {
                 interface AngularTemplateBase {
                     Content: __ABBREV.__List.T<any>;
                 }
-                interface ISettings<_T1> {
-                    GenerateSnapshot(baseUrl: string, fragment: string): string;
-                    TemplateImplementation<_M1>(x0: _T1): __ABBREV.__List.T<any>;
-                    get_MainHtmlPath(): string;
-                    get_ClientControl(): __ABBREV.__Web.Control;
-                    get_TemplateHtmlPath(): string;
-                }
-                interface AngularWebsite<_T1> {
+                interface AngularWebsite<_T1, _T2> {
                 }
             }
+        }
+    }
+}
+declare module IntelliFactory {
+    module WebSharper {
+        interface F2<_T1, _T2, _T3> {
+            (a1: _T1, a2: _T2): _T3;
+            (tuple: {
+                0: _T1;
+                1: _T2;
+            }): _T3;
         }
     }
 }
@@ -44,6 +134,9 @@ declare module __ABBREV {
     
     export import __WebSharper = IntelliFactory.WebSharper;
     export import __Html = IntelliFactory.WebSharper.Html;
+    export import __SharpAngles = ellipsoid.org.SharpAngles;
+    export import __Core = ellipsoid.org.Weatherwax.Core;
+    export import __UI = ellipsoid.org.SharpAngles.UI;
     export import __List = IntelliFactory.WebSharper.List;
     export import __Web = IntelliFactory.WebSharper.Web;
 }
