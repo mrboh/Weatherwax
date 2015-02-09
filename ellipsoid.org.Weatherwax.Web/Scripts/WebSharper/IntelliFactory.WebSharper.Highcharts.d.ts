@@ -35,6 +35,8 @@ declare module IntelliFactory {
             }
             interface CreditsCfg {
             }
+            interface DataCfg {
+            }
             interface DrilldownDrillUpButtonCfg {
             }
             interface DrilldownCfg {

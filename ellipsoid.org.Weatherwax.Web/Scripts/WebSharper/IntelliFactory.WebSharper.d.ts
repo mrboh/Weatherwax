@@ -1,5 +1,26 @@
 declare module IntelliFactory {
     module WebSharper {
+        module Html {
+            module Client {
+                module Activator {
+                    var Activate : {
+                        (): void;
+                    };
+                }
+                module HtmlContentExtensions {
+                    var IControlBody_SingleNode_Static : {
+                        (node: __ABBREV.__Dom.Node): __ABBREV.__Client.IControlBody;
+                    };
+                }
+                interface IControlBody {
+                    ReplaceInDom(x0: __ABBREV.__Dom.Node): void;
+                }
+                interface IControl {
+                    get_Body(): __ABBREV.__Client.IControlBody;
+                    get_Id(): string;
+                }
+            }
+        }
         module Arrays {
             var reverse : {
                 (array: __ABBREV.__WebSharper.ArrayProxy, offset: number, length: number): void;
@@ -297,10 +318,10 @@ declare module IntelliFactory {
             };
         }
         module CancellationTokenSource {
-            var CreateLinkedTokenSource1 : {
+            var CreateLinkedTokenSource : {
                 (tokens: __ABBREV.__WebSharper.CancellationTokenProxy[]): void;
             };
-            var CreateLinkedTokenSource : {
+            var CreateLinkedTokenSource1 : {
                 (t1: __ABBREV.__WebSharper.CancellationTokenProxy, t2: __ABBREV.__WebSharper.CancellationTokenProxy): void;
             };
         }
@@ -1241,12 +1262,29 @@ declare module IntelliFactory {
                 <_M1>(arr: __ABBREV.__WebSharper.ArrayProxy): number;
             };
         }
-        module Pervasives {
-            var NewFromList : {
-                <_M1>(fields: __ABBREV.__WebSharper.seq<any>): _M1;
-            };
+        module JavaScript {
+            module Pervasives {
+                var NewFromList : {
+                    <_M1>(fields: __ABBREV.__WebSharper.seq<any>): _M1;
+                };
+            }
+            module JSModule {
+                interface Kind {
+                }
+            }
         }
         module Remoting {
+            module AjaxRemotingProvider {
+                var Sync : {
+                    (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): __ABBREV.__WebSharper.ObjectProxy;
+                };
+                var Async : {
+                    (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): any;
+                };
+                var Send : {
+                    (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): void;
+                };
+            }
             interface IAjaxProvider {
                 Async(x0: string, x1: __ABBREV.__WebSharper.ObjectProxy, x2: string, x3: {
                     (x: string): void;
@@ -1255,20 +1293,21 @@ declare module IntelliFactory {
                 }): void;
                 Sync(x0: string, x1: __ABBREV.__WebSharper.ObjectProxy, x2: string): string;
             }
+            interface IRemotingProvider {
+                Sync(x0: string, x1: __ABBREV.__WebSharper.ObjectProxy[]): __ABBREV.__WebSharper.ObjectProxy;
+                Async(x0: string, x1: __ABBREV.__WebSharper.ObjectProxy[]): any;
+                Send(x0: string, x1: __ABBREV.__WebSharper.ObjectProxy[]): void;
+            }
+            interface AjaxRemotingProvider {
+            }
+            var UseHttps : {
+                (): boolean;
+            };
             var makeHeaders : {
                 (m: string): __ABBREV.__WebSharper.ObjectProxy;
             };
             var makePayload : {
                 (data: __ABBREV.__WebSharper.ObjectProxy[]): string;
-            };
-            var Call : {
-                (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): __ABBREV.__WebSharper.ObjectProxy;
-            };
-            var Async : {
-                (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): any;
-            };
-            var Send : {
-                (m: string, data: __ABBREV.__WebSharper.ObjectProxy[]): void;
             };
             var EndPoint : {
                 (): string;
@@ -1294,10 +1333,6 @@ declare module IntelliFactory {
             var Activate : {
                 <_M1>(json: __ABBREV.__WebSharper.ObjectProxy): _M1;
             };
-        }
-        module JavaScript {
-            interface Kind {
-            }
         }
         interface ArrayProxy {
         }
@@ -1352,6 +1387,8 @@ declare module IntelliFactory {
         }
         interface AggregateException {
         }
+        interface Guid {
+        }
         interface IDisposableProxy {
             Dispose(): void;
         }
@@ -1379,6 +1416,12 @@ declare module IntelliFactory {
         }
         interface PrintfFormat {
         }
+        interface Random {
+            Next(): number;
+            Next1(maxValue: number): number;
+            Next2(minValue: number, maxValue: number): number;
+            NextBytes(buffer: number[]): void;
+        }
         interface TimeSpanProxy {
         }
         interface ref<_T1> {
@@ -1387,6 +1430,8 @@ declare module IntelliFactory {
 }
 declare module __ABBREV {
     
+    export import __Dom = IntelliFactory.WebSharper.JavaScript.Dom;
+    export import __Client = IntelliFactory.WebSharper.Html.Client;
     export import __WebSharper = IntelliFactory.WebSharper;
     export import __List = IntelliFactory.WebSharper.List;
     export import __Remoting = IntelliFactory.WebSharper.Remoting;

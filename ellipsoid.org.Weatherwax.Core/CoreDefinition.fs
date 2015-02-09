@@ -1,6 +1,6 @@
 ﻿namespace ellipsoid.org.Weatherwax.Core
 
-open IntelliFactory.Html
+open IntelliFactory.WebSharper.Html.Server
 open IntelliFactory.WebSharper
 open System.Collections.Generic
 
@@ -25,20 +25,66 @@ type ControllerConfiguration<'T when 'T : equality> () =
             | Some c -> c.Name
             | None -> failwith "Controller not defined in ControllerConfiguration"
 
+[<JavaScript>]
+type StateTemplateReference<'TTemplate when 'TTemplate : equality> =
+    | Direct of 'TTemplate
+    | Parameterised of (obj -> string)
+
+[<JavaScript>]
+type IState<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> =
+    abstract member Url: string option
+    abstract member Template: StateTemplateReference<'TTemplate>
+    abstract member Controller: 'TController option
+
+[<JavaScript>]
+type StateInfo<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> =
+    { State: 'TState
+      Name: string
+      Implementation: IState<'TTemplate,'TController>}
+
+[<JavaScript>]
+type StateConfiguration<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> (nameMapper: 'TState -> string) =
+    let mutable _states: StateInfo<'TTemplate,'TController,'TState> list = []
+    let mutable _whens: (string * string) list = []
+    let mutable _otherwise: string option = None
+
+    member this.States with get() = _states
+    member this.Whens with get() = _whens
+    member this.DefineState (state: 'TState, implementation: IState<'TTemplate,'TController>) =
+        let name = nameMapper state
+
+        // Check if state has already been defined
+        match List.tryFind (fun s -> s.Name = name) _states with
+            | Some s -> failwith "State has already been defined"
+            | None -> _states <- List.append [ { State = state; Name = name; Implementation = implementation } ] _states
+        this
+//    member this.StateName state =
+//        match List.tryFind (fun s -> s.State = state) _states with
+//            | Some s -> nameMapper state
+//            | None -> failwith "State not defined in StateConfiguration"
+    member this.When (whenPath: string, toPath: string) =
+        _whens <- List.append [ (whenPath, toPath) ] _whens
+        this
+    member this.Otherwise () = _otherwise
+    member this.Otherwise (path: string) = 
+        _otherwise <- Some path
+        this
+
 type TemplateFile =
     | Html of string
     // | Markdown of string
 
-type Template<'a> =
-    | Inline of Element<'a> list
+type Template =
+    | Inline of Element list
     | Static of TemplateFile
 
-type ISettings<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> =
+type ISettings<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> =
     abstract member ClientControl: Web.Control
     abstract member ControllerConfiguration: ControllerConfiguration<'TController>
     abstract member FileTemplateRootPath: string
     abstract member GenerateSnapshot: baseUrl: string -> fragment: string -> string
     abstract member MainHtmlPath: string
+    abstract member StateConfiguration: StateConfiguration<'TTemplate,'TController,'TState>
     abstract member TemplateHtmlPath: string
     abstract member TemplateRelativePath: 'TTemplate -> string
-    abstract member TemplateImplementation: 'TTemplate -> Template<_>
+    abstract member TemplateImplementation: 'TTemplate -> Template

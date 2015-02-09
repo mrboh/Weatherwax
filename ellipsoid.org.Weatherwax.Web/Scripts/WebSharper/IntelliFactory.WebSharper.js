@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Arrays,Operators,Number,IntrinsicFunctionProxy,Array,Seq,Unchecked,Enumerator,Arrays2D,Concurrency,AggregateException,Option,clearTimeout,setTimeout,CancellationTokenSource,Char,Util,Lazy,Error,Date,JavaScript,Scheduler,T,Json,List,T1,Math,Strings,PrintfHelpers,Remoting,XhrProvider,AsyncProxy,JSON,Enumerable,String,RegExp;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Arrays,Operators,Number,IntrinsicFunctionProxy,Array,Seq,Unchecked,Enumerator,Arrays2D,Concurrency,AggregateException,Option,clearTimeout,setTimeout,CancellationTokenSource,Char,Util,Lazy,Error,Date,console,Scheduler,T,Html,Client,Activator,document,jQuery,Json,JSON,JavaScript,JSModule,HtmlContentExtensions,SingleNode,List,T1,Math,Strings,PrintfHelpers,Remoting,XhrProvider,AsyncProxy,AjaxRemotingProvider,window,Enumerable,String,RegExp;
  Runtime.Define(Global,{
   IntelliFactory:{
    WebSharper:{
@@ -747,11 +747,7 @@
       return this.c;
      }
     },{
-     CreateLinkedTokenSource:function(t1,t2)
-     {
-      return CancellationTokenSource.CreateLinkedTokenSource1([t1,t2]);
-     },
-     CreateLinkedTokenSource1:function(tokens)
+     CreateLinkedTokenSource:function(tokens)
      {
       var cts,action;
       cts=CancellationTokenSource.New();
@@ -769,6 +765,10 @@
        return;
       };
       return Arrays.iter(action,tokens);
+     },
+     CreateLinkedTokenSource1:function(t1,t2)
+     {
+      return CancellationTokenSource.CreateLinkedTokenSource([t1,t2]);
      },
      New:function()
      {
@@ -1332,7 +1332,9 @@
       {
       },function(exn)
       {
-       return JavaScript.LogMore(["WebSharper: Uncaught asynchronous exception",exn]);
+       var ps;
+       ps=[exn];
+       return console?console.log.apply(console,["WebSharper: Uncaught asynchronous exception"].concat(ps)):undefined;
       },function()
       {
       },ctOpt);
@@ -1713,6 +1715,80 @@
       return x;
      }
     },
+    Guid:Runtime.Class({},{
+     NewGuid:function()
+     {
+      var $0=this,$this=this;
+      return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c)
+      {
+       var r=Global.Math.random()*16|0,v=c=="x"?r:r&0x3|0x8;
+       return v.toString(16);
+      });
+     }
+    }),
+    Html:{
+     Client:{
+      Activator:{
+       Activate:Runtime.Field(function()
+       {
+        var _,meta;
+        if(Activator.hasDocument())
+         {
+          meta=document.getElementById("websharper-data");
+          _=meta?jQuery(document).ready(function()
+          {
+           var text,obj,x,action;
+           text=meta.getAttribute("content");
+           obj=Json.Activate(JSON.parse(text));
+           x=JSModule.GetFields(obj);
+           action=Runtime.Tupled(function(tupledArg)
+           {
+            var k,v,p,old;
+            k=tupledArg[0];
+            v=tupledArg[1];
+            p=v.get_Body();
+            old=document.getElementById(k);
+            return p.ReplaceInDom(old);
+           });
+           return Arrays.iter(action,x);
+          }):null;
+         }
+        else
+         {
+          _=null;
+         }
+        return _;
+       }),
+       hasDocument:function()
+       {
+        var $0=this,$this=this;
+        return typeof Global.document!=="undefined";
+       }
+      },
+      HtmlContentExtensions:{
+       "IControlBody.SingleNode.Static":function(node)
+       {
+        return SingleNode.New(node);
+       },
+       SingleNode:Runtime.Class({
+        ReplaceInDom:function(old)
+        {
+         var value;
+         value=this.node.parentNode.replaceChild(this.node,old);
+         return;
+        }
+       },{
+        New:function(node)
+        {
+         var r;
+         r=Runtime.New(this,{});
+         r.node=node;
+         return r;
+        }
+       })
+      }
+     }
+    },
     IntrinsicFunctionProxy:{
      Array2DZeroCreate:function(n,m)
      {
@@ -1802,51 +1878,69 @@
      }
     },
     JavaScript:{
-     Delete:function($x,$field)
-     {
-      var $0=this,$this=this;
-      return delete $x[$field];
-     },
-     ForEach:function($x,$iter)
-     {
-      var $0=this,$this=this;
-      for(var k in $x){
-       if($iter(k))
-        break;
+     JSModule:{
+      Delete:function($x,$field)
+      {
+       var $0=this,$this=this;
+       return delete $x[$field];
+      },
+      ForEach:function($x,$iter)
+      {
+       var $0=this,$this=this;
+       for(var k in $x){
+        if($iter(k))
+         break;
+       }
+      },
+      GetFieldNames:function($o)
+      {
+       var $0=this,$this=this;
+       var r=[];
+       for(var k in $o)r.push(k);
+       return r;
+      },
+      GetFieldValues:function($o)
+      {
+       var $0=this,$this=this;
+       var r=[];
+       for(var k in $o)r.push($o[k]);
+       return r;
+      },
+      GetFields:function($o)
+      {
+       var $0=this,$this=this;
+       var r=[];
+       for(var k in $o)r.push([k,$o[k]]);
+       return r;
+      },
+      Log:function($x)
+      {
+       var $0=this,$this=this;
+       if(Global.console)
+        Global.console.log($x);
+      },
+      LogMore:function($args)
+      {
+       var $0=this,$this=this;
+       if(Global.console)
+        Global.console.log.apply(Global.console,$args);
       }
      },
-     GetFieldNames:function($o)
-     {
-      var $0=this,$this=this;
-      var r=[];
-      for(var k in $o)r.push(k);
-      return r;
-     },
-     GetFieldValues:function($o)
-     {
-      var $0=this,$this=this;
-      var r=[];
-      for(var k in $o)r.push($o[k]);
-      return r;
-     },
-     GetFields:function($o)
-     {
-      var $0=this,$this=this;
-      var r=[];
-      for(var k in $o)r.push([k,$o[k]]);
-      return r;
-     },
-     Log:function($x)
-     {
-      var $0=this,$this=this;
-      if(Global.console)
-       Global.console.log($x);
-     },
-     LogMore:function($args)
-     {
-      var $0=this,$this=this;
-      if(Global.console)
-       Global.console.log.apply(Global.console,$args);
+     Pervasives:{
+      NewFromList:function(fields)
+      {
+       var r,enumerator,forLoopVar,v,k;
+       r={};
+       enumerator=Enumerator.Get(fields);
+       while(enumerator.MoveNext())
+        {
+         forLoopVar=enumerator.get_Current();
+         v=forLoopVar[1];
+         k=forLoopVar[0];
+         r[k]=v;
+        }
+       return r;
+      }
      }
     },
     Json:{
@@ -1917,7 +2011,7 @@
      {
       var r;
       r=new ty();
-      JavaScript.ForEach(obj,function(k)
+      JSModule.ForEach(obj,function(k)
       {
        r[k]=obj[k];
        return false;
@@ -1937,7 +2031,7 @@
         if(matchValue==="object")
          {
           r={};
-          JavaScript.ForEach(x,function(y)
+          JSModule.ForEach(x,function(y)
           {
            r[y]=f(x[y]);
            return false;
@@ -2889,22 +2983,6 @@
       return _;
      }
     },
-    Pervasives:{
-     NewFromList:function(fields)
-     {
-      var r,enumerator,forLoopVar,v,k;
-      r={};
-      enumerator=Enumerator.Get(fields);
-      while(enumerator.MoveNext())
-       {
-        forLoopVar=enumerator.get_Current();
-        v=forLoopVar[1];
-        k=forLoopVar[0];
-        r[k]=v;
-       }
-      return r;
-     }
-    },
     PrintfHelpers:{
      padNumLeft:function(s,l)
      {
@@ -2939,7 +3017,7 @@
        s=Global.String(o1);
        if(s==="[object Object]")
         {
-         x=JavaScript.GetFields(o1);
+         x=JSModule.GetFields(o1);
          mapping=Runtime.Tupled(function(tupledArg)
          {
           var k,v;
@@ -3048,112 +3126,179 @@
       return Arrays.blit(a,0,array,index,IntrinsicFunctionProxy.GetLength(a));
      }
     },
+    Random:Runtime.Class({
+     Next:function()
+     {
+      return Math.floor(Math.random()*2147483648);
+     },
+     Next1:function(maxValue)
+     {
+      return maxValue<0?Operators.FailWith("'maxValue' must be greater than zero."):Math.floor(Math.random()*maxValue);
+     },
+     Next2:function(minValue,maxValue)
+     {
+      var _,maxValue1;
+      if(minValue>maxValue)
+       {
+        _=Operators.FailWith("'minValue' cannot be greater than maxValue.");
+       }
+      else
+       {
+        maxValue1=maxValue-minValue;
+        _=minValue+Math.floor(Math.random()*maxValue1);
+       }
+      return _;
+     },
+     NextBytes:function(buffer)
+     {
+      var i;
+      for(i=0;i<=IntrinsicFunctionProxy.GetLength(buffer)-1;i++){
+       IntrinsicFunctionProxy.SetArray(buffer,i,Math.floor(Math.random()*256));
+      }
+      return;
+     }
+    },{
+     New:function()
+     {
+      return Runtime.New(this,{});
+     }
+    }),
     Remoting:{
      AjaxProvider:Runtime.Field(function()
      {
       return XhrProvider.New();
      }),
-     Async:function(m,data)
-     {
-      var headers,payload,f;
-      headers=Remoting.makeHeaders(m);
-      payload=Remoting.makePayload(data);
-      f=function()
+     AjaxRemotingProvider:Runtime.Class({},{
+      Async:function(m,data)
       {
-       var x,f1;
-       x=AsyncProxy.get_CancellationToken();
-       f1=function(_arg1)
+       var headers,payload,f;
+       headers=Remoting.makeHeaders(m);
+       payload=Remoting.makePayload(data);
+       f=function()
        {
-        var callback,x2;
-        callback=Runtime.Tupled(function(tupledArg)
+        var x,f1;
+        x=AsyncProxy.get_CancellationToken();
+        f1=function(_arg1)
         {
-         var ok,err,cc,waiting,callback1,reg,ok1,err1,arg00;
-         ok=tupledArg[0];
-         err=tupledArg[1];
-         cc=tupledArg[2];
-         waiting={
-          contents:true
-         };
-         callback1=function()
+         var callback,x2;
+         callback=Runtime.Tupled(function(tupledArg)
          {
-          var _;
-          if(waiting.contents)
-           {
-            waiting.contents=false;
-            _=cc(new Error("OperationCanceledException"));
-           }
-          else
-           {
-            _=null;
-           }
-          return _;
-         };
-         reg=Concurrency.Register(_arg1,function()
-         {
-          return callback1();
+          var ok,err,cc,waiting,callback1,reg,ok1,err1,arg00;
+          ok=tupledArg[0];
+          err=tupledArg[1];
+          cc=tupledArg[2];
+          waiting={
+           contents:true
+          };
+          callback1=function()
+          {
+           var _;
+           if(waiting.contents)
+            {
+             waiting.contents=false;
+             _=cc(new Error("OperationCanceledException"));
+            }
+           else
+            {
+             _=null;
+            }
+           return _;
+          };
+          reg=Concurrency.Register(_arg1,function()
+          {
+           return callback1();
+          });
+          ok1=function(x1)
+          {
+           var _;
+           if(waiting.contents)
+            {
+             waiting.contents=false;
+             reg.Dispose();
+             _=ok(Json.Activate(JSON.parse(x1)));
+            }
+           else
+            {
+             _=null;
+            }
+           return _;
+          };
+          err1=function(e)
+          {
+           var _;
+           if(waiting.contents)
+            {
+             waiting.contents=false;
+             reg.Dispose();
+             _=err(e);
+            }
+           else
+            {
+             _=null;
+            }
+           return _;
+          };
+          arg00=Remoting.EndPoint();
+          return Remoting.AjaxProvider().Async(arg00,headers,payload,ok1,err1);
          });
-         ok1=function(x1)
-         {
-          var _;
-          if(waiting.contents)
-           {
-            waiting.contents=false;
-            reg.Dispose();
-            _=ok(Json.Activate(JSON.parse(x1)));
-           }
-          else
-           {
-            _=null;
-           }
-          return _;
-         };
-         err1=function(e)
-         {
-          var _;
-          if(waiting.contents)
-           {
-            waiting.contents=false;
-            reg.Dispose();
-            _=err(e);
-           }
-          else
-           {
-            _=null;
-           }
-          return _;
-         };
-         arg00=Remoting.EndPoint();
-         return Remoting.AjaxProvider().Async(arg00,headers,payload,ok1,err1);
-        });
-        x2=Concurrency.FromContinuations(callback);
-        return x2;
+         x2=Concurrency.FromContinuations(callback);
+         return x2;
+        };
+        return Concurrency.Bind(x,f1);
        };
-       return Concurrency.Bind(x,f1);
-      };
-      return Concurrency.Delay(f);
-     },
-     Call:function(m,data)
-     {
-      var arg00,arg10,arg20,data1;
-      arg00=Remoting.EndPoint();
-      arg10=Remoting.makeHeaders(m);
-      arg20=Remoting.makePayload(data);
-      data1=Remoting.AjaxProvider().Sync(arg00,arg10,arg20);
-      return Json.Activate(JSON.parse(data1));
-     },
+       return Concurrency.Delay(f);
+      },
+      Send:function(m,data)
+      {
+       var computation,computation1,t;
+       computation=AjaxRemotingProvider.Async(m,data);
+       computation1=Concurrency.Ignore(computation);
+       t={
+        $:0
+       };
+       return Concurrency.Start(computation1,t);
+      },
+      Sync:function(m,data)
+      {
+       var arg00,arg10,arg20,data1;
+       arg00=Remoting.EndPoint();
+       arg10=Remoting.makeHeaders(m);
+       arg20=Remoting.makePayload(data);
+       data1=Remoting.AjaxProvider().Sync(arg00,arg10,arg20);
+       return Json.Activate(JSON.parse(data1));
+      }
+     }),
      EndPoint:Runtime.Field(function()
      {
       return"?";
      }),
-     Send:function(m,data)
+     UseHttps:function()
      {
-      var computation,computation1,t;
-      computation=Remoting.Async(m,data);
-      computation1=Concurrency.Ignore(computation);
-      t={
-       $:0
-      };
-      return Concurrency.Start(computation1,t);
+      var _,_this,_1,_this1,_2,matchValue;
+      try
+      {
+       _this=window.location.href;
+       if(!Strings.StartsWith(_this,"https://"))
+        {
+         _this1=window.location.href;
+         _2=Strings.Replace(_this1,"http://","https://");
+         Remoting.EndPoint=function()
+         {
+          return _2;
+         };
+         _1=true;
+        }
+       else
+        {
+         _1=false;
+        }
+       _=_1;
+      }
+      catch(matchValue)
+      {
+       _=false;
+      }
+      return _;
      },
      XhrProvider:Runtime.Class({
       Async:function(url,headers,data,ok,err)
@@ -3185,6 +3330,7 @@
      {
       var $0=this,$this=this;
       var xhr=new Global.XMLHttpRequest();
+      xhr.withCredentials=true;
       xhr.open("POST",$url,$async);
       for(var h in $headers){
        xhr.setRequestHeader(h,$headers[h]);
@@ -4542,6 +4688,16 @@
       var $0=this,$this=this;
       return $s.replace(/^\s+/,"").replace(/\s+$/,"");
      },
+     TrimEnd:function($s)
+     {
+      var $0=this,$this=this;
+      return $s.replace(/\s+$/,"");
+     },
+     TrimStart:function($s)
+     {
+      var $0=this,$this=this;
+      return $s.replace(/^\s+/,"");
+     },
      collect:function(f,s)
      {
       return Arrays.init(s.length,function(i)
@@ -4624,7 +4780,7 @@
          }
         else
          {
-          _1=matchValue==="function"?Operators.FailWith("Cannot compare function values."):matchValue==="boolean"?a<b?-1:1:matchValue==="number"?a<b?-1:1:matchValue==="string"?a<b?-1:1:a===null?-1:b===null?1:"CompareTo"in a?a.CompareTo(b):(a instanceof Array?b instanceof Array:false)?Unchecked.compareArrays(a,b):(a instanceof Date?b instanceof Date:false)?Unchecked.compareDates(a,b):Unchecked.compareArrays(JavaScript.GetFields(a),JavaScript.GetFields(b));
+          _1=matchValue==="function"?Operators.FailWith("Cannot compare function values."):matchValue==="boolean"?a<b?-1:1:matchValue==="number"?a<b?-1:1:matchValue==="string"?a<b?-1:1:a===null?-1:b===null?1:"CompareTo"in a?a.CompareTo(b):(a instanceof Array?b instanceof Array:false)?Unchecked.compareArrays(a,b):(a instanceof Date?b instanceof Date:false)?Unchecked.compareDates(a,b):Unchecked.compareArrays(JSModule.GetFields(a),JSModule.GetFields(b));
          }
         _=_1;
        }
@@ -4640,7 +4796,7 @@
       else
        {
         matchValue=typeof a;
-        _=matchValue==="object"?a===null?false:b===null?false:"Equals"in a?a.Equals(b):(a instanceof Array?b instanceof Array:false)?Unchecked.arrayEquals(a,b):(a instanceof Date?b instanceof Date:false)?Unchecked.dateEquals(a,b):Unchecked.arrayEquals(JavaScript.GetFields(a),JavaScript.GetFields(b)):false;
+        _=matchValue==="object"?a===null?false:b===null?false:"Equals"in a?a.Equals(b):(a instanceof Array?b instanceof Array:false)?Unchecked.arrayEquals(a,b):(a instanceof Date?b instanceof Date:false)?Unchecked.dateEquals(a,b):Unchecked.arrayEquals(JSModule.GetFields(a),JSModule.GetFields(b)):false;
        }
       return _;
      },
@@ -4735,7 +4891,7 @@
         h={
          contents:0
         };
-        JavaScript.ForEach(o,function(key)
+        JSModule.ForEach(o,function(key)
         {
          h.contents=op_PlusPlus(op_PlusPlus(h.contents,Unchecked.hashString(key)),Unchecked.Hash(o[key]));
          return false;
@@ -4810,10 +4966,20 @@
   Lazy=Runtime.Safe(WebSharper.Lazy);
   Error=Runtime.Safe(Global.Error);
   Date=Runtime.Safe(Global.Date);
-  JavaScript=Runtime.Safe(WebSharper.JavaScript);
+  console=Runtime.Safe(Global.console);
   Scheduler=Runtime.Safe(Concurrency.Scheduler);
   T=Runtime.Safe(Enumerator.T);
+  Html=Runtime.Safe(WebSharper.Html);
+  Client=Runtime.Safe(Html.Client);
+  Activator=Runtime.Safe(Client.Activator);
+  document=Runtime.Safe(Global.document);
+  jQuery=Runtime.Safe(Global.jQuery);
   Json=Runtime.Safe(WebSharper.Json);
+  JSON=Runtime.Safe(Global.JSON);
+  JavaScript=Runtime.Safe(WebSharper.JavaScript);
+  JSModule=Runtime.Safe(JavaScript.JSModule);
+  HtmlContentExtensions=Runtime.Safe(Client.HtmlContentExtensions);
+  SingleNode=Runtime.Safe(HtmlContentExtensions.SingleNode);
   List=Runtime.Safe(WebSharper.List);
   T1=Runtime.Safe(List.T);
   Math=Runtime.Safe(Global.Math);
@@ -4822,7 +4988,8 @@
   Remoting=Runtime.Safe(WebSharper.Remoting);
   XhrProvider=Runtime.Safe(Remoting.XhrProvider);
   AsyncProxy=Runtime.Safe(WebSharper.AsyncProxy);
-  JSON=Runtime.Safe(Global.JSON);
+  AjaxRemotingProvider=Runtime.Safe(Remoting.AjaxRemotingProvider);
+  window=Runtime.Safe(Global.window);
   Enumerable=Runtime.Safe(WebSharper.Enumerable);
   String=Runtime.Safe(Global.String);
   return RegExp=Runtime.Safe(Global.RegExp);
@@ -4831,9 +4998,12 @@
  {
   Remoting.EndPoint();
   Remoting.AjaxProvider();
+  Activator.Activate();
   Concurrency.scheduler();
   Concurrency.defCTS();
   Concurrency.GetCT();
   return;
  });
 }());
+
+//# sourceMappingURL=IntelliFactory.WebSharper.map

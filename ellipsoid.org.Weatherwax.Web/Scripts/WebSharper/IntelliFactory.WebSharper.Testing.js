@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,IntrinsicFunctionProxy,ok,Unchecked,JavaScript,Testing,Pervasives,TestBuilder,test,Random,Arrays,Math,NaN1,Infinity1,List,String,Seq;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,IntrinsicFunctionProxy,ok,Unchecked,console,Testing,Pervasives,TestBuilder,test,Random,Arrays,Math,NaN1,Infinity1,List,String,Seq;
  Runtime.Define(Global,{
   IntelliFactory:{
    WebSharper:{
@@ -36,10 +36,14 @@
      Pervasives:{
       Is:function(a,b)
       {
-       var _;
+       var _,ps;
        if(!Unchecked.Equals(a,b))
         {
-         JavaScript.Log(["Equality test failed.",a,b]);
+         ps=[a,b];
+         if(console)
+          {
+           console.log.apply(console,["Equality test failed."].concat(ps));
+          }
          _=ok(false,"Equality test failed.");
         }
        else
@@ -50,10 +54,14 @@
       },
       Isnt:function(a,b)
       {
-       var _;
+       var _,ps;
        if(Unchecked.Equals(a,b))
         {
-         JavaScript.Log(["Inequality test failed.",a,b]);
+         ps=[a,b];
+         if(console)
+          {
+           console.log.apply(console,["Inequality test failed."].concat(ps));
+          }
          _=ok(false,"Inequality test failed.");
         }
        else
@@ -353,7 +361,7 @@
   IntrinsicFunctionProxy=Runtime.Safe(WebSharper.IntrinsicFunctionProxy);
   ok=Runtime.Safe(Global.ok);
   Unchecked=Runtime.Safe(WebSharper.Unchecked);
-  JavaScript=Runtime.Safe(WebSharper.JavaScript);
+  console=Runtime.Safe(Global.console);
   Testing=Runtime.Safe(WebSharper.Testing);
   Pervasives=Runtime.Safe(Testing.Pervasives);
   TestBuilder=Runtime.Safe(Pervasives.TestBuilder);
@@ -380,3 +388,5 @@
   return;
  });
 }());
+
+//# sourceMappingURL=IntelliFactory.WebSharper.Testing.map

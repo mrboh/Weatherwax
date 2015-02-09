@@ -2,16 +2,22 @@ namespace ellipsoid.org.Weatherwax.Core
 
 open ellipsoid.org.SharpAngles
 open ellipsoid.org.Weatherwax.Core
-open IntelliFactory.Html
 open IntelliFactory.WebSharper
+open IntelliFactory.WebSharper.Html.Server
 open IntelliFactory.WebSharper.Sitelets
 open System
 open System.IO
 open System.Web
+open System.Xml
+
+type WeatherwaxError =
+    | Unspecified
 
 type Action<'T> =
-    | [<CompiledName "">] Index
-    |                     Template of 'T
+    | [<CompiledName "">]            Index
+    |                                Template of 'T
+    |                                Error of WeatherwaxError
+    // | [<CompiledName "sitemap.xml">] Sitemap
 
 type WebSharperTemplateBase =
     { Body: Content.HtmlElement list }
@@ -19,7 +25,7 @@ type WebSharperTemplateBase =
 type AngularTemplateBase =
     { Content: Content.HtmlElement list }
 
-type AngularWebsite<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> (settings: ISettings<'TTemplate,'TController>) =
+type AngularWebsite<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> (settings: ISettings<'TTemplate,'TController,'TState>) =    
     let appTemplate =
         Content.Template<WebSharperTemplateBase>(settings.MainHtmlPath)
             .With ("body", fun template -> template.Body)
@@ -64,4 +70,25 @@ type AngularWebsite<'TTemplate,'TController when 'TTemplate : equality and 'TCon
                                               let localPath = getLocalPath filename
                                               use textReader = new StreamReader (localPath)
                                               streamWriter.Write (textReader.ReadToEnd ()) }
+                | Error errorType ->
+                    CustomContent <| fun context ->
+                        { Status = Http.Status.Ok
+                          Headers = [ Http.Header.Custom "Content-Type" "text/plain" ]
+                          WriteBody = fun stream ->
+                              use streamWriter = new StreamWriter (stream)
+                              let message =
+                                match errorType with
+                                    | Unspecified -> "Unspecified error"
+                              let fullMessage = sprintf "Weatherwax Error: %s" message
+                              streamWriter.Write fullMessage }
+//                | Sitemap ->
+//                    CustomContent <| fun context ->
+//                        { Status = Http.Status.Ok
+//                          Headers = [ Http.Header.Custom "Content-Type" "text/xml" ]
+//                          WriteBody = fun stream ->
+//                              let xmlDoc = new XmlDocument ()
+//                              let xmlRootNode = xmlDoc.CreateElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9")
+//                              xmlDoc.AppendChild (xmlRootNode) |> ignore
+//                              xmlDoc.Save (stream) }
+
         member this.Actions = []

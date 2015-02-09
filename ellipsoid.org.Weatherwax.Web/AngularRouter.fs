@@ -1,53 +1,45 @@
 ﻿namespace ellipsoid.org.Weatherwax.Web
 
-open ellipsoid.org.SharpAngles
-open ellipsoid.org.SharpAngles.Route
-open ellipsoid.org.SharpAngles.UI
+open AngularControllers
+open AngularTemplates
 open ellipsoid.org.Weatherwax.Core
-open ellipsoid.org.Weatherwax.Core.Dependencies
-open ellipsoid.org.Weatherwax.Web.AngularControllers
-open ellipsoid.org.Weatherwax.Web.AngularTemplates
 open IntelliFactory.WebSharper
-open System.Collections.Generic
+open IntelliFactory.WebSharper.JavaScript
+
+open AngularStates
 
 [<JavaScript>]
 module AngularRouter =
 
+    type StateImplementation (url: string option, template: StateTemplateReference<AngularTemplate>, ?controller: AngularController) =
+        interface IState<AngularTemplate,AngularController> with
+            member this.Url = url
+            member this.Template = template
+            member this.Controller = controller
+
+    type C = AngularController
+    type SI = StateImplementation
+    type T = AngularTemplate
+
     type ErrorRouteParameters =
         { id: int }
 
-    type T = AngularTemplate
-    type C = AngularController
+    // This takes an object containing the URL parameters (p) and converts it into a template path
+    let internal errorTemplate = fun (p: obj) -> sprintf "Template/%s" <| TemplateRelativePath (T.Error (p :?> ErrorRouteParameters).id)
 
-    let TemplateUrl t = "Template/" + TemplateRelativePath t
-    let ControllerName controller =
-        match List.tryFind (fun c -> c.Controller = controller) ControllerConfiguration.Controllers with
-            | Some c -> c.Name
-            | None -> failwith "Controller not defined in ControllerConfiguration"
+    let StateConfiguration =
+        StateConfiguration<AngularTemplate,AngularController,AngularState>(AngularStateName)
+            // Abstract states
+            .DefineState(Master None,               SI (None,                       Direct T.Master))
 
-    let RouteConfiguration =
-        AngularExpression2<_,_>(Providers.State, Providers.UrlRouter).Resolve(
-            fun (stateProvider, urlRouterProvider) ->
-                stateProvider
-                
-                    // UI-Router can use nested states; we define a master state which is the parent for all other states
-                    .State("master", StateConfig(Abstract = true, TemplateUrl = TemplateUrl Master))
+            // Concrete states
+            .DefineState(Master <| Some Home,       SI (Some "^/",                  Direct T.Home,                  C.Home))
+            .DefineState(Master <| Some About,      SI (Some "^/about",             Direct T.About,                 C.About))
+            .DefineState(Master <| Some Music,      SI (Some "^/music",             Direct T.Music,                 C.Music))
+            .DefineState(Master <| Some Error,      SI (Some "^/error/{id}",        Parameterised errorTemplate,    C.Error))
 
-                    // Other states
-                    .State("master.home",       StateConfig(Url = "^/",         TemplateUrl = TemplateUrl T.Home,      Controller = ControllerName C.Home))
-                    .State("master.about",      StateConfig(Url = "^/about",    TemplateUrl = TemplateUrl T.About,     Controller = ControllerName C.About))
-                    .State("master.music",      StateConfig(Url = "^/music",    TemplateUrl = TemplateUrl T.Music,     Controller = ControllerName C.Music))
-                    .State("master.error",
-                        StateConfig(
-                            Url = "^/error/{id}",
-                            TemplateUrl = (fun (p: ErrorRouteParameters) -> TemplateUrl (T.Error p.id)),
-                            Controller = ControllerName C.Error
-                        ))
-                    |> ignore
+            // Default to the master.home state if no state provided
+            .When("", "/")
 
-                // Default to front page
-                urlRouterProvider.When ("", "/") |> ignore
-
-                // If route not found
-                urlRouterProvider.Otherwise ("/error/404") |> ignore
-        )
+            // If no matching state, show the error state
+            .Otherwise("/error/404")

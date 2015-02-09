@@ -28,6 +28,11 @@ type AngularExpression2<'T1,'T2> (d1: Dependency<'T1>, d2: Dependency<'T2>) =
     interface IAngularExpression
 
 [<JavaScript>]
+type AngularExpression3<'T1,'T2,'T3> (d1: Dependency<'T1>, d2: Dependency<'T2>, d3: Dependency<'T3>) =
+    member this.Resolve (lambda: 'T1 * 'T2 * 'T3 -> _) = (d1.JavascriptName, d2.JavascriptName, d3.JavascriptName, lambda) :> obj
+    interface IAngularExpression
+
+[<JavaScript>]
 module Dependencies =
 
     let Router = "ngRoute"
@@ -37,6 +42,7 @@ module Dependencies =
         
         let CustomScope<'T when 'T :> Scope> = Dependency<'T> ("$scope")
         let RootScope = Dependency<RootScopeService> ("$rootScope")
+        let Sce = Dependency<SCEService> ("$sce")
         let Scope = Dependency<Scope> ("$scope")
         let State = Dependency<StateService> ("$state")
 

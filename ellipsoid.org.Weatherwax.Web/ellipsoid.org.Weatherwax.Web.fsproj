@@ -7,12 +7,13 @@
     <ProjectGuid>{2e1f5bec-36bc-45b0-ada4-7198462dc235}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F2A71F9B-5D33-465A-A702-920D77279786}</ProjectTypeGuids>
     <WebSharperProject>Site</WebSharperProject>
+    <WebSharperSourceMap>True</WebSharperSourceMap>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44301</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <NuGetPackageImportStamp>b7f15899</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>1b481f15</NuGetPackageImportStamp>
     <TargetFrameworkProfile />
     <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
@@ -65,15 +66,11 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OtherFlags>--quotations-debug</OtherFlags>
+  </PropertyGroup>
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <Import Project="packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets" Condition="Exists('packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\WebSharper.3.0.3.76-alpha\build\WebSharper.targets'))" />
-  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties Guid="{349c5851-65df-11da-9384-00065b846f21}">
@@ -113,15 +110,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\PostSharp.3.1.46\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" />
-  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
-    <Error Condition="!Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
-    <Error Condition="Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
-  </Target>
   <ItemGroup>
     <Compile Include="Configuration.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="AngularScopes.fs" />
+    <Compile Include="AngularStates.fs" />
     <Compile Include="AngularTemplates.fs" />
     <Compile Include="AngularConfiguration.fs" />
     <Compile Include="AngularControllers.fs" />
@@ -133,27 +126,90 @@
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="packages.config" />
-    <Content Include="App_Readme\Elmah.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CacheByAttribute.Core">
-      <HintPath>..\packages\CacheByAttribute.Core.0.1.0.2\lib\net45\CacheByAttribute.Core.dll</HintPath>
+      <HintPath>..\packages\CacheByAttribute.Core.0.1.0.3\lib\net45\CacheByAttribute.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ellipsoid.org.SharpAngles">
-      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.1.3-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
+      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.2-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ellipsoid.org.SharpAngles.UI">
-      <HintPath>..\packages\ellipsoid.org.SharpAngles.UI.0.2.0-alpha\lib\ellipsoid.org.SharpAngles.UI.dll</HintPath>
+      <HintPath>..\packages\ellipsoid.org.SharpAngles.UI.0.3.0-alpha\lib\ellipsoid.org.SharpAngles.UI.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Elmah">
-      <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    <Reference Include="IntelliFactory.Formlets">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.Formlets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.JavaScript">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.JavaScript.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.Reactive">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.Reactive.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Collections">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Control">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Control.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Core">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Formlets">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Formlets.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="IntelliFactory.WebSharper.Highcharts">
-      <HintPath>..\packages\WebSharper.Highcharts.3.0.2.75-alpha\lib\net40\IntelliFactory.WebSharper.Highcharts.dll</HintPath>
+      <HintPath>..\packages\WebSharper.Highcharts.3.0.5.80-alpha\lib\net40\IntelliFactory.WebSharper.Highcharts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Html.Client">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Html.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Html.Server">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Html.Server.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.InterfaceGenerator">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.InterfaceGenerator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.JavaScript">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.JavaScript.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.JQuery">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.JQuery.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Sitelets">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Sitelets.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Testing">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Testing.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.WebSharper.Web">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.WebSharper.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IntelliFactory.Xml">
+      <HintPath>..\packages\WebSharper.3.0.15.92-alpha\lib\net40\IntelliFactory.Xml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -180,4 +236,16 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\packages\WebSharper.3.0.15.92-alpha\build\WebSharper.targets" Condition="Exists('..\packages\WebSharper.3.0.15.92-alpha\build\WebSharper.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\WebSharper.3.0.15.92-alpha\build\WebSharper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\WebSharper.3.0.15.92-alpha\build\WebSharper.targets'))" />
+  </Target>
+  <Import Project="..\packages\PostSharp.3.1.46\tools\PostSharp.targets" Condition="Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" />
+  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
+    <Error Condition="!Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
+    <Error Condition="Exists('..\packages\PostSharp.3.1.46\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
+  </Target>
 </Project>

@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Collections,BalancedTree,Operators,IntrinsicFunctionProxy,Seq,List,T,Arrays,JavaScript,Enumerator,DictionaryUtil,Dictionary,Unchecked,FSharpMap,Pair,Option,MapUtil,FSharpSet,SetModule,SetUtil,Array,HashSet,HashSetUtil,HashSet1,LinkedList,EnumeratorProxy,ListProxy,ResizeArray,ResizeArrayProxy;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Collections,BalancedTree,Operators,IntrinsicFunctionProxy,Seq,List,T,Arrays,JavaScript,JSModule,Enumerator,DictionaryUtil,Dictionary,Unchecked,FSharpMap,Pair,Option,MapUtil,FSharpSet,SetModule,SetUtil,Array,HashSet,HashSetUtil,HashSet1,LinkedList,EnumeratorProxy,ListProxy,ResizeArray,ResizeArrayProxy;
  Runtime.Define(Global,{
   IntelliFactory:{
    WebSharper:{
@@ -285,7 +285,7 @@
       GetEnumerator:function()
       {
        var s;
-       s=JavaScript.GetFieldValues(this.data);
+       s=JSModule.GetFieldValues(this.data);
        return Enumerator.Get(s);
       },
       Remove:function(k)
@@ -294,7 +294,7 @@
        h=this.hash.call(null,k);
        if(this.data.hasOwnProperty(h))
         {
-         JavaScript.Delete(this.data,h);
+         JSModule.Delete(this.data,h);
          this.count=this.count-1;
          _=true;
         }
@@ -1656,6 +1656,7 @@
   T=Runtime.Safe(List.T);
   Arrays=Runtime.Safe(WebSharper.Arrays);
   JavaScript=Runtime.Safe(WebSharper.JavaScript);
+  JSModule=Runtime.Safe(JavaScript.JSModule);
   Enumerator=Runtime.Safe(WebSharper.Enumerator);
   DictionaryUtil=Runtime.Safe(Collections.DictionaryUtil);
   Dictionary=Runtime.Safe(Collections.Dictionary);
@@ -1682,3 +1683,5 @@
   return;
  });
 }());
+
+//# sourceMappingURL=IntelliFactory.WebSharper.Collections.map

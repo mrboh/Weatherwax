@@ -4,9 +4,10 @@ open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.ServerDirectives
 open ellipsoid.org.Weatherwax.Web
 open ellipsoid.org.Weatherwax.Web.AngularScopes
+open ellipsoid.org.Weatherwax.Web.AngularStates
 open ellipsoid.org.Weatherwax.Web.Remoting
-open IntelliFactory.Html
 open IntelliFactory.WebSharper
+open IntelliFactory.WebSharper.Html.Server
 open Microsoft.FSharp.Linq
 open System.Linq
 open System.Linq.Expressions
@@ -29,6 +30,12 @@ module AngularTemplates =
             | Music -> "Music"
             | Error x -> sprintf "Error/%d" x
 
+    let CreateSRef state = AngularStateName state |> SRef
+    let CreateMasterSRef state = AngularStateName <| AngularState.Master (Some state) |> SRef
+    let CreateMasterSRefWithArg state arg value =
+        let stateName = AngularStateName <| AngularState.Master (Some state)
+        sprintf "%s({%s: %s})" stateName arg value |> SRef
+
     let TemplateImplementation =
         function
             | Master -> 
@@ -36,11 +43,11 @@ module AngularTemplates =
                     Div [ Id "master" ] -< [
                         H1 [ Class "ui block header teal" ] -< [ Text "Weatherwax: WebSharper + Angular" ]
                         Div [ Class "ui menu" ] -< [
-                            A [ SRef "master.home"; Class "item" ] -< [ I [ Class "home icon" ]; Text "Home" ]
-                            A [ SRef "master.about"; Class "item" ] -< [ I [ Class "help circle icon" ]; Text "About" ]
-                            A [ SRef "master.music"; Class "item" ] -< [ I [ Class "music icon" ]; Text "Music" ]
+                            A [ CreateMasterSRef MasterState.Home; Class "item" ] -< [ I [ Class "home icon" ]; Text "Home" ]
+                            A [ CreateMasterSRef MasterState.About; Class "item" ] -< [ I [ Class "help circle icon" ]; Text "About" ]
+                            A [ CreateMasterSRef MasterState.Music; Class "item" ] -< [ I [ Class "music icon" ]; Text "Music" ]
                             Div [ Class "right menu" ] -< [
-                                A [ SRef "master.error({ id: 404 })"; Class "item" ] -< [ I [ Class "frown icon" ]; Text "Error Page" ]
+                                A [ CreateMasterSRefWithArg MasterState.Error "id" "404"; Class "item" ] -< [ I [ Class "frown icon" ]; Text "Error Page" ]
                             ]
                         ]
                         UIView []

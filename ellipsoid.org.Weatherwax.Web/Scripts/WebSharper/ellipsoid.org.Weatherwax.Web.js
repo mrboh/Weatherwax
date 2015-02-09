@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Default,List,Remoting,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularControllers,Unchecked,Seq,Operators1,AngularTemplates,AngularModules;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,AngularModules;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -11,8 +11,9 @@
        {
         return AngularExpression1.New(Providers.UrlMatcherFactory()).Resolve(function(urlMatcherFactory)
         {
-         urlMatcherFactory.caseInsensitive(true);
-         urlMatcherFactory.strictMode(false);
+         var value,value1;
+         value=urlMatcherFactory.caseInsensitive(true);
+         value1=urlMatcherFactory.strictMode(false);
          return;
         });
        }),
@@ -31,19 +32,24 @@
          $:0
         },"BaseController",AngularExpression2.New(Services.Scope(),Services.RootScope()).Resolve(Runtime.Tupled(function(tupledArg)
         {
-         return tupledArg[1].$on("$viewContentLoaded",function()
+         var scope,rootScope;
+         scope=tupledArg[0];
+         rootScope=tupledArg[1];
+         return rootScope.$on("$viewContentLoaded",function()
          {
-          var element;
-          if(jQuery("#compositionComplete").length===0)
+          var matchValue,_,element,value;
+          matchValue=jQuery("#compositionComplete").length;
+          if(matchValue===0)
            {
             element=Default.Span(List.ofArray([Default.Id("compositionComplete")]));
-            jQuery("body").append(element.Body);
-            return;
+            value=jQuery("body").append(element.Dom);
+            _=void value;
            }
           else
            {
-            return null;
+            _=null;
            }
+          return _;
          });
         }))).DefineController({
          $:1
@@ -54,39 +60,39 @@
          $:2
         },"AboutController",AngularExpression1.New(Services.Scope()).Resolve(function()
         {
-         var chart,returnVal,returnVal1,returnVal2,returnVal3,returnVal4,returnVal5;
+         var chart;
          chart=jQuery("#chart");
-         returnVal={};
-         returnVal.text="Monthly Average Temperature";
-         returnVal.x=-20;
-         returnVal1={};
-         returnVal1.text="Source: WorldClimate.com";
-         returnVal1.x=-20;
-         returnVal2={};
-         returnVal2.categories=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-         returnVal3={};
-         returnVal3.title={
-          text:"Temperature (°C)"
-         };
-         returnVal3.plotLines=[{
-          value:0,
-          width:1,
-          color:"#808080"
-         }];
-         returnVal4={};
-         returnVal4.valueSuffix="°C";
-         returnVal5={};
-         returnVal5.layout="vertical";
-         returnVal5.align="right";
-         returnVal5.verticalAlign="middle";
-         returnVal5.borderWidth=0;
          return chart.highcharts({
-          title:returnVal,
-          subtitle:returnVal1,
-          xAxis:returnVal2,
-          yAxis:returnVal3,
-          tooltip:returnVal4,
-          legend:returnVal5,
+          title:{
+           text:"Monthly Average Temperature",
+           x:-20
+          },
+          subtitle:{
+           text:"Source: WorldClimate.com",
+           x:-20
+          },
+          xAxis:{
+           categories:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+          },
+          yAxis:{
+           title:{
+            text:"Temperature (°C)"
+           },
+           plotLines:[{
+            value:0,
+            width:1,
+            color:"#808080"
+           }]
+          },
+          tooltip:{
+           valueSuffix:"°C"
+          },
+          legend:{
+           layout:"vertical",
+           align:"right",
+           verticalAlign:"middle",
+           borderWidth:0
+          },
           series:[{
            name:"Tokyo",
            data:[7,6.9,9.5,14.5,18.2,21.5,25.2,26.5,23.3,18.3,13.9,9.6]
@@ -109,11 +115,12 @@
          f=function()
          {
           var x,f1;
-          x=Remoting.Async("ellipsoid.org.Weatherwax.Web:0",[]);
+          x=AjaxRemotingProvider.Async("ellipsoid.org.Weatherwax.Web:0",[]);
           f1=function(_arg1)
           {
+           var value;
            scope.songs=_arg1;
-           scope.$apply();
+           value=scope.$apply();
            return Concurrency.Return(null);
           };
           return Concurrency.Bind(x,f1);
@@ -134,98 +141,238 @@
       AngularEntryPoint:Runtime.Class({
        get_Body:function()
        {
-        var x;
+        var x,f;
         x=Operators.add(Default.Div(List.ofArray([Default.Attr().Class("angular-sitelet-root"),ClientDirectives.NgController("BaseController")])),List.ofArray([ClientDirectives.UIView(Runtime.New(T,{
          $:0
         }))]));
-        Operators.OnAfterRender(function(el)
+        f=function(el)
         {
-         angular.bootstrap(el.Body,[Configuration.AppName()]);
-        },x);
+         var value;
+         value=angular.bootstrap(el.Dom,[Configuration.AppName()]);
+         return;
+        };
+        Operators.OnAfterRender(f,x);
         return x;
        }
       }),
       AngularModules:{
        SiteletApp:Runtime.Field(function()
        {
-        return Utilities["Module.Controllers"](angular.module(Configuration.AppName(),[Dependencies.Router(),Dependencies.UIRouter()]).config(AngularConfiguration.UrlConfiguration()).config(AngularConfiguration.UIRouterConfiguration()).config(AngularRouter.RouteConfiguration()),AngularControllers.ControllerConfiguration());
+        return Utilities["Module.Controllers"](Utilities["Module.States"](angular.module(Configuration.AppName(),[Dependencies.Router(),Dependencies.UIRouter()]).config(AngularConfiguration.UrlConfiguration()).config(AngularConfiguration.UIRouterConfiguration()),AngularRouter.StateConfiguration(),function(_arg1)
+        {
+         return AngularStates.AngularStateName(_arg1);
+        },function(_arg1)
+        {
+         return AngularTemplates.TemplateRelativePath(_arg1);
+        },AngularControllers.ControllerConfiguration()),AngularControllers.ControllerConfiguration());
        })
       },
       AngularRouter:{
-       ControllerName:function(controller)
+       StateConfiguration:Runtime.Field(function()
        {
-        var p,l,matchValue;
-        p=function(c)
-        {
-         return Unchecked.Equals(c.Controller,controller);
+        var arg0,arg01,arg02,arg03;
+        arg0={
+         $:1,
+         $0:{
+          $:0
+         }
         };
-        l=AngularControllers.ControllerConfiguration().get_Controllers();
-        matchValue=Seq.tryFind(p,l);
-        return matchValue.$==0?Operators1.FailWith("Controller not defined in ControllerConfiguration"):matchValue.$0.Name;
-       },
-       RouteConfiguration:Runtime.Field(function()
-       {
-        return AngularExpression2.New(Providers.State(),Providers.UrlRouter()).Resolve(Runtime.Tupled(function(tupledArg)
+        arg01={
+         $:1,
+         $0:{
+          $:1
+         }
+        };
+        arg02={
+         $:1,
+         $0:{
+          $:2
+         }
+        };
+        arg03={
+         $:1,
+         $0:{
+          $:3
+         }
+        };
+        return StateConfiguration.New(function(_arg1)
         {
-         var stateProvider,urlRouterProvider;
-         stateProvider=tupledArg[0];
-         urlRouterProvider=tupledArg[1];
-         stateProvider.state("master",{
-          "abstract":true,
-          templateUrl:AngularRouter.TemplateUrl({
-           $:0
-          })
-         }).state("master.home",{
-          url:"^/",
-          templateUrl:AngularRouter.TemplateUrl({
-           $:1
-          }),
-          controller:AngularRouter.ControllerName({
-           $:1
-          })
-         }).state("master.about",{
-          url:"^/about",
-          templateUrl:AngularRouter.TemplateUrl({
-           $:2
-          }),
-          controller:AngularRouter.ControllerName({
-           $:2
-          })
-         }).state("master.music",{
-          url:"^/music",
-          templateUrl:AngularRouter.TemplateUrl({
-           $:3
-          }),
-          controller:AngularRouter.ControllerName({
-           $:3
-          })
-         }).state("master.error",{
-          url:"^/error/{id}",
-          templateUrl:function(p)
-          {
-           return AngularRouter.TemplateUrl({
-            $:4,
-            $0:p.id
-           });
-          },
-          controller:AngularRouter.ControllerName({
-           $:4
-          })
-         });
-         urlRouterProvider.when("","/");
-         urlRouterProvider.otherwise("/error/404");
-         return;
-        }));
+         return AngularStates.AngularStateName(_arg1);
+        }).DefineState({
+         $:0,
+         $0:{
+          $:0
+         }
+        },StateImplementation.New({
+         $:0
+        },{
+         $:0,
+         $0:{
+          $:0
+         }
+        },{
+         $:0
+        })).DefineState({
+         $:0,
+         $0:arg0
+        },StateImplementation.New({
+         $:1,
+         $0:"^/"
+        },{
+         $:0,
+         $0:{
+          $:1
+         }
+        },{
+         $:1,
+         $0:{
+          $:1
+         }
+        })).DefineState({
+         $:0,
+         $0:arg01
+        },StateImplementation.New({
+         $:1,
+         $0:"^/about"
+        },{
+         $:0,
+         $0:{
+          $:2
+         }
+        },{
+         $:1,
+         $0:{
+          $:2
+         }
+        })).DefineState({
+         $:0,
+         $0:arg02
+        },StateImplementation.New({
+         $:1,
+         $0:"^/music"
+        },{
+         $:0,
+         $0:{
+          $:3
+         }
+        },{
+         $:1,
+         $0:{
+          $:3
+         }
+        })).DefineState({
+         $:0,
+         $0:arg03
+        },StateImplementation.New({
+         $:1,
+         $0:"^/error/{id}"
+        },{
+         $:1,
+         $0:function(p)
+         {
+          return AngularRouter.errorTemplate(p);
+         }
+        },{
+         $:1,
+         $0:{
+          $:4
+         }
+        })).When("","/").Otherwise1("/error/404");
        }),
-       TemplateUrl:function(t)
+       StateImplementation:Runtime.Class({
+        get_Controller:function()
+        {
+         return this.controller;
+        },
+        get_Template:function()
+        {
+         return this.template;
+        },
+        get_Url:function()
+        {
+         return this.url;
+        }
+       },{
+        New:function(url,template,controller)
+        {
+         var r;
+         r=Runtime.New(this,{});
+         r.url=url;
+         r.template=template;
+         r.controller=controller;
+         return r;
+        }
+       }),
+       errorTemplate:function(p)
        {
-        return"Template/"+AngularTemplates.TemplateRelativePath(t);
+        return"Template/"+PrintfHelpers.toSafe(AngularTemplates.TemplateRelativePath({
+         $:4,
+         $0:p.id
+        }));
+       }
+      },
+      AngularStates:{
+       AngularStateName:function(_arg1)
+       {
+        var value,matcher;
+        value=_arg1.$0;
+        matcher=function(_arg2)
+        {
+         return _arg2.$==1?"about":_arg2.$==2?"music":_arg2.$==3?"error":"home";
+        };
+        return AngularStates.subState("master",value,matcher);
+       },
+       subState:function(name,value,matcher)
+       {
+        var _,s,_1;
+        if(value.$==1)
+         {
+          s=value.$0;
+          _1=matcher(s);
+          _=PrintfHelpers.toSafe(name)+"."+PrintfHelpers.toSafe(_1);
+         }
+        else
+         {
+          _=name;
+         }
+        return _;
        }
       },
       AngularTemplates:{
        TemplateRelativePath:function(_arg1)
        {
-        return _arg1.$==1?"Home":_arg1.$==2?"About":_arg1.$==3?"Music":_arg1.$==4?"Error/"+Global.String(_arg1.$0):"Master";
+        var _,x;
+        if(_arg1.$==1)
+         {
+          _="Home";
+         }
+        else
+         {
+          if(_arg1.$==2)
+           {
+            _="About";
+           }
+          else
+           {
+            if(_arg1.$==3)
+             {
+              _="Music";
+             }
+            else
+             {
+              if(_arg1.$==4)
+               {
+                x=_arg1.$0;
+                _="Error/"+Global.String(x);
+               }
+              else
+               {
+                _="Master";
+               }
+             }
+           }
+         }
+        return _;
        }
       },
       Configuration:{
@@ -254,11 +401,13 @@
   jQuery=Runtime.Safe(Global.jQuery);
   WebSharper=Runtime.Safe(Global.IntelliFactory.WebSharper);
   Html=Runtime.Safe(WebSharper.Html);
-  Default=Runtime.Safe(Html.Default);
+  Client=Runtime.Safe(Html.Client);
+  Default=Runtime.Safe(Client.Default);
   List=Runtime.Safe(WebSharper.List);
   Remoting=Runtime.Safe(WebSharper.Remoting);
+  AjaxRemotingProvider=Runtime.Safe(Remoting.AjaxRemotingProvider);
   Concurrency=Runtime.Safe(WebSharper.Concurrency);
-  Operators=Runtime.Safe(Html.Operators);
+  Operators=Runtime.Safe(Client.Operators);
   ClientDirectives=Runtime.Safe(Core.ClientDirectives);
   T=Runtime.Safe(List.T);
   angular=Runtime.Safe(Global.angular);
@@ -267,17 +416,18 @@
   Utilities=Runtime.Safe(Core.Utilities);
   AngularConfiguration=Runtime.Safe(Web.AngularConfiguration);
   AngularRouter=Runtime.Safe(Web.AngularRouter);
-  AngularControllers=Runtime.Safe(Web.AngularControllers);
-  Unchecked=Runtime.Safe(WebSharper.Unchecked);
-  Seq=Runtime.Safe(WebSharper.Seq);
-  Operators1=Runtime.Safe(WebSharper.Operators);
+  AngularStates=Runtime.Safe(Web.AngularStates);
   AngularTemplates=Runtime.Safe(Web.AngularTemplates);
+  AngularControllers=Runtime.Safe(Web.AngularControllers);
+  StateConfiguration=Runtime.Safe(Core.StateConfiguration);
+  StateImplementation=Runtime.Safe(AngularRouter.StateImplementation);
+  PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
   return AngularModules=Runtime.Safe(Web.AngularModules);
  });
  Runtime.OnLoad(function()
  {
   Configuration.AppName();
-  AngularRouter.RouteConfiguration();
+  AngularRouter.StateConfiguration();
   AngularModules.SiteletApp();
   AngularControllers.ControllerConfiguration();
   AngularConfiguration.UrlConfiguration();
@@ -285,3 +435,5 @@
   return;
  });
 }());
+
+//# sourceMappingURL=ellipsoid.org.Weatherwax.Web.map

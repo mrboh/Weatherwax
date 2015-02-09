@@ -1,6 +1,8 @@
 ﻿namespace ellipsoid.org.Weatherwax.Core
 
+open Dependencies
 open ellipsoid.org.SharpAngles
+open ellipsoid.org.SharpAngles.UI
 open IntelliFactory.WebSharper
 open Microsoft.FSharp.Quotations.Patterns
 open Microsoft.FSharp.Reflection
@@ -12,10 +14,40 @@ module Utilities =
         [<JavaScript>]
         member this.Controllers (config: ControllerConfiguration<'T>) =
             for c in config.Controllers do this.Controller(c.Name, c.Implementation) |> ignore
+            this
 
-//        [<JavaScript>]
-//        member this.Controllers (controllers: 'T list, nameMapping: 'T -> string, implementationMapping: 'T -> obj) =
-//            for c in controllers do this.Controller(nameMapping c, implementationMapping c) |> ignore
+        [<JavaScript>]
+        member this.States (config: StateConfiguration<'TTemplate,'TController,'TState>, nameMapper: 'TState -> string, templateRelativePath: 'TTemplate -> string, controllerConfig: ControllerConfiguration<'TController>) =
+            let resolveTemplate t =
+                match t with
+                    | Direct template -> sprintf "Template/%s" <| templateRelativePath template :> obj
+                    | Parameterised templateFunc -> templateFunc :> obj
+            let controllerName c =
+                controllerConfig.ControllerName c
+            let routeConfiguration =
+                AngularExpression2<_,_>(Providers.State, Providers.UrlRouter).Resolve(
+                    fun (stateProvider, urlRouterProvider) ->
+                        config.States
+                        |> List.iter (fun s ->
+                            match s.Implementation.Url with
+                                | Some u ->
+                                    match s.Implementation.Controller with
+                                        | Some c -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s)) |> ignore
+                                        | None -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s)) |> ignore
+                                | None ->
+                                    match s.Implementation.Controller with
+                                        | Some c -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s)) |> ignore
+                                        | None -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s)) |> ignore
+                        )
+
+                        config.Whens
+                        |> List.iter (fun w -> match w with | (whenPath, toPath) -> urlRouterProvider.When (whenPath, toPath) |> ignore)
+
+                        match config.Otherwise() with
+                            | Some o -> urlRouterProvider.Otherwise (o) |> ignore
+                            | None -> ()
+                )
+            this.Config (routeConfiguration)
                         
     let private hasNestedProperty = 
         function

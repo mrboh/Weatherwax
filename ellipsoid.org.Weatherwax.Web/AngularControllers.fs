@@ -5,7 +5,8 @@ open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.Dependencies
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Highcharts
-open IntelliFactory.WebSharper.Html
+open IntelliFactory.WebSharper.Html.Client
+open IntelliFactory.WebSharper.JavaScript
 open IntelliFactory.WebSharper.JQuery
 open ellipsoid.org.Weatherwax.Web.AngularScopes
 
@@ -35,7 +36,7 @@ module AngularControllers =
                                 match JQuery.Of("#compositionComplete").Length with
                                     | 0 ->
                                         let element = Span [ Id "compositionComplete" ]
-                                        JQuery.Of("body").Append(element.Body) |> ignore
+                                        JQuery.Of("body").Append(element.Dom) |> ignore
                                     | _ -> ()
                             
                         )
