@@ -32,12 +32,12 @@ module Utilities =
                             match s.Implementation.Url with
                                 | Some u ->
                                     match s.Implementation.Controller with
-                                        | Some c -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s)) |> ignore
-                                        | None -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s)) |> ignore
+                                        | Some c -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s.Implementation)) |> ignore
+                                        | None -> stateProvider.State (s.Name, StateConfig (Url = u, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s.Implementation)) |> ignore
                                 | None ->
                                     match s.Implementation.Controller with
-                                        | Some c -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s)) |> ignore
-                                        | None -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s)) |> ignore
+                                        | Some c -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Controller = controllerName c, Data = s.Implementation)) |> ignore
+                                        | None -> stateProvider.State (s.Name, StateConfig (Abstract = true, TemplateUrl = resolveTemplate s.Implementation.Template, Data = s.Implementation)) |> ignore
                         )
 
                         config.Whens

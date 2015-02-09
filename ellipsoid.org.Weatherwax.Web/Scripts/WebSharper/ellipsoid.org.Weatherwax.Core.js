@@ -336,7 +336,7 @@
               stateProvider.state(s.Name,{
                "abstract":true,
                templateUrl:resolveTemplate(s.Implementation.get_Template()),
-               data:s
+               data:s.Implementation
               });
               return;
              }
@@ -347,7 +347,7 @@
                "abstract":true,
                templateUrl:resolveTemplate(s.Implementation.get_Template()),
                controller:controllerName(c),
-               data:s
+               data:s.Implementation
               });
               return;
              }
@@ -361,7 +361,7 @@
               stateProvider.state(s.Name,{
                url:u,
                templateUrl:resolveTemplate(s.Implementation.get_Template()),
-               data:s
+               data:s.Implementation
               });
               return;
              }
@@ -372,7 +372,7 @@
                url:u,
                templateUrl:resolveTemplate(s.Implementation.get_Template()),
                controller:controllerName(c1),
-               data:s
+               data:s.Implementation
               });
               return;
              }
