@@ -14,21 +14,14 @@ open System.Linq.Expressions
 
 module AngularTemplates =
 
-    type AngularTemplate =
-        | Master
-        | Home
-        | About
-        | Music
-        | Error of int
-
     [<JavaScript>]
     let TemplateRelativePath =
         function
-            | Master -> "Master"
-            | Home -> "Home"
-            | About -> "About"
-            | Music -> "Music"
-            | Error x -> sprintf "Error/%d" x
+            | AngularTemplate.Master -> "Master"
+            | AngularTemplate.Home -> "Home"
+            | AngularTemplate.About -> "About"
+            | AngularTemplate.Music -> "Music"
+            | AngularTemplate.Error x -> sprintf "Error/%d" x
 
     let CreateSRef state = AngularStateName state |> SRef
     let CreateMasterSRef state = AngularStateName <| AngularState.Master (Some state) |> SRef
@@ -38,7 +31,7 @@ module AngularTemplates =
 
     let TemplateImplementation =
         function
-            | Master -> 
+            | AngularTemplate.Master -> 
                 Inline [
                     Div [ Id "master" ] -< [
                         H1 [ Class "ui block header teal" ] -< [ Text "Weatherwax: WebSharper + Angular" ]
@@ -53,9 +46,9 @@ module AngularTemplates =
                         UIView []
                     ]
                 ]
-            | Home -> 
+            | AngularTemplate.Home -> 
                 Static <| Html "Home.html"
-            | About -> 
+            | AngularTemplate.About -> 
                 Inline [ 
                     Div [ Text ("This template demonstrates the use of other WebSharper extensions inside " +
                                 "Angular. The AboutController instantiates a chart inside the #chart tag " +
@@ -63,7 +56,7 @@ module AngularTemplates =
                     Br []
                     Div [ Id "chart" ]
                 ]
-            | Music ->
+            | AngularTemplate.Music ->
                 let musicRepeater = NgRepeater <@ fun (scope: MusicScope) -> scope.songs @>
 
                 Inline [ 
@@ -89,5 +82,5 @@ module AngularTemplates =
                         ]
                     ]
                 ]
-            | Error errorCode -> 
+            | AngularTemplate.Error errorCode -> 
                 Inline [ Div [ sprintf "Oh dear, something has gone horribly wrong (Error Code %d)" errorCode |> Text ] ]

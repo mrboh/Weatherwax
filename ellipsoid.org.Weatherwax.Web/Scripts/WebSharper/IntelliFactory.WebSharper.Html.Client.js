@@ -999,5 +999,3 @@
   return;
  });
 }());
-
-//# sourceMappingURL=IntelliFactory.WebSharper.Html.Client.map

@@ -388,5 +388,3 @@
   return;
  });
 }());
-
-//# sourceMappingURL=IntelliFactory.WebSharper.Testing.map

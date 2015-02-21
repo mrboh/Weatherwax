@@ -1,6 +1,7 @@
 ﻿namespace ellipsoid.org.Weatherwax.Web
 
 open ellipsoid.org.SharpAngles
+open ellipsoid.org.SharpAngles.UI
 open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.Dependencies
 open IntelliFactory.WebSharper
@@ -14,19 +15,12 @@ open ellipsoid.org.Weatherwax.Web.AngularScopes
 [<Require(typeof<Resources.Highcharts>)>]
 module AngularControllers =
 
-    type AngularController =
-        | Base
-        | Home
-        | About
-        | Music
-        | Error
-
     type ErrorRouteParameters =
         { id: int }
 
     let ControllerConfiguration =
         ControllerConfiguration<AngularController>()
-            .DefineController(Base, "BaseController",
+            .DefineController(AngularController.Base, "BaseController",
                 AngularExpression2<_,_>(Services.Scope, Services.RootScope).Resolve(
                     fun (scope, rootScope) ->
                         rootScope.On("$viewContentLoaded",
@@ -39,18 +33,23 @@ module AngularControllers =
                                         JQuery.Of("body").Append(element.Dom) |> ignore
                                     | _ -> ()
                             
-                        )
-                )
+                        ) |> ignore
+                        scope.On(
+                            "$stateChangeSuccess",
+                                fun (event, toState: StateConfig, toParams, fromState: StateConfig, fromParams) ->
+                                    let data = toState.Data :?> StateImplementation
+                                    ()
+                        )                )
             )
             
-            .DefineController(Home, "HomeController",
+            .DefineController(AngularController.Home, "HomeController",
                 AngularExpression1<_>(Services.Scope).Resolve(
                     fun scope ->
                         ()
                 )            
             )
 
-            .DefineController(About, "AboutController",
+            .DefineController(AngularController.About, "AboutController",
                 AngularExpression1<_>(Services.Scope).Resolve(
                     fun scope ->
                         let chart = JQuery.Of("#chart")
@@ -114,7 +113,7 @@ module AngularControllers =
             
             )
 
-            .DefineController(Music, "MusicController",
+            .DefineController(AngularController.Music, "MusicController",
                 AngularExpression1<_>(Services.CustomScope<MusicScope>).Resolve(
                     fun scope ->
                         async {
@@ -125,7 +124,7 @@ module AngularControllers =
                 )            
             )
 
-            .DefineController(Error, "ErrorController",
+            .DefineController(AngularController.Error, "ErrorController",
                 AngularExpression1<_>(Services.Scope).Resolve(
                     fun scope ->
                         ()

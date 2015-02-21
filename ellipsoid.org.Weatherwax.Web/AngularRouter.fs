@@ -11,12 +11,6 @@ open AngularStates
 [<JavaScript>]
 module AngularRouter =
 
-    type StateImplementation (url: string option, template: StateTemplateReference<AngularTemplate>, ?controller: AngularController) =
-        interface IState<AngularTemplate,AngularController> with
-            member this.Url = url
-            member this.Template = template
-            member this.Controller = controller
-
     type C = AngularController
     type SI = StateImplementation
     type T = AngularTemplate

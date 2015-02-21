@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,AngularModules;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,State,AngularModules;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -32,18 +32,18 @@
          $:0
         },"BaseController",AngularExpression2.New(Services.Scope(),Services.RootScope()).Resolve(Runtime.Tupled(function(tupledArg)
         {
-         var scope,rootScope;
+         var scope,rootScope,value;
          scope=tupledArg[0];
          rootScope=tupledArg[1];
-         return rootScope.$on("$viewContentLoaded",function()
+         value=rootScope.$on("$viewContentLoaded",function()
          {
-          var matchValue,_,element,value;
+          var matchValue,_,element,value1;
           matchValue=jQuery("#compositionComplete").length;
           if(matchValue===0)
            {
             element=Default.Span(List.ofArray([Default.Id("compositionComplete")]));
-            value=jQuery("body").append(element.Dom);
-            _=void value;
+            value1=jQuery("body").append(element.Dom);
+            _=void value1;
            }
           else
            {
@@ -51,6 +51,17 @@
            }
           return _;
          });
+         return scope.$on("$stateChangeSuccess",Runtime.Tupled(function(tupledArg1)
+         {
+          var toState;
+          tupledArg1[0];
+          toState=tupledArg1[1];
+          tupledArg1[2];
+          tupledArg1[3];
+          tupledArg1[4];
+          toState.data;
+          return null;
+         }));
         }))).DefineController({
          $:1
         },"HomeController",AngularExpression1.New(Services.Scope()).Resolve(function()
@@ -279,30 +290,6 @@
          }
         })).When("","/").Otherwise1("/error/404");
        }),
-       StateImplementation:Runtime.Class({
-        get_Controller:function()
-        {
-         return this.controller;
-        },
-        get_Template:function()
-        {
-         return this.template;
-        },
-        get_Url:function()
-        {
-         return this.url;
-        }
-       },{
-        New:function(url,template,controller)
-        {
-         var r;
-         r=Runtime.New(this,{});
-         r.url=url;
-         r.template=template;
-         r.controller=controller;
-         return r;
-        }
-       }),
        errorTemplate:function(p)
        {
         return"Template/"+PrintfHelpers.toSafe(AngularTemplates.TemplateRelativePath({
@@ -380,7 +367,13 @@
        {
         return"siteletApp";
        })
-      }
+      },
+      StateImplementation:Runtime.Class({},{
+       New:function(url,template,controller)
+       {
+        return Runtime.New(this,State.New(url,template,controller));
+       }
+      })
      }
     }
    }
@@ -420,12 +413,14 @@
   AngularTemplates=Runtime.Safe(Web.AngularTemplates);
   AngularControllers=Runtime.Safe(Web.AngularControllers);
   StateConfiguration=Runtime.Safe(Core.StateConfiguration);
-  StateImplementation=Runtime.Safe(AngularRouter.StateImplementation);
+  StateImplementation=Runtime.Safe(Web.StateImplementation);
   PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
+  State=Runtime.Safe(Core.State);
   return AngularModules=Runtime.Safe(Web.AngularModules);
  });
  Runtime.OnLoad(function()
  {
+  Runtime.Inherit(StateImplementation,State);
   Configuration.AppName();
   AngularRouter.StateConfiguration();
   AngularModules.SiteletApp();
@@ -435,5 +430,3 @@
   return;
  });
 }());
-
-//# sourceMappingURL=ellipsoid.org.Weatherwax.Web.map

@@ -23,6 +23,24 @@ open System.Web.Configuration
     - ellipsoid.org.Weatherwax.Core
 *)
 
+type AngularTemplate =
+    | Master
+    | Home
+    | About
+    | Music
+    | Error of int
+
+type AngularController =
+    | Base
+    | Home
+    | About
+    | Music
+    | Error
+
+[<JavaScript>]
+type StateImplementation (url, template, ?controller) =
+    inherit State<AngularTemplate,AngularController> (url, template, controller)
+
 module Configuration =
 
     [<JavaScript>]

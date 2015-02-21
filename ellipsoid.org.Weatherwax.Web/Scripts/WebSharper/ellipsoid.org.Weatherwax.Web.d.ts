@@ -8,11 +8,6 @@ declare module ellipsoid {
                     };
                 }
                 module AngularRouter {
-                    interface StateImplementation {
-                        get_Url(): __ABBREV.__WebSharper.OptionProxy<string>;
-                        get_Template(): __ABBREV.__Core.StateTemplateReference<__ABBREV.__AngularTemplates.AngularTemplate>;
-                        get_Controller(): __ABBREV.__WebSharper.OptionProxy<__ABBREV.__AngularControllers.AngularController>;
-                    }
                     interface ErrorRouteParameters {
                         id: number;
                     }
@@ -20,24 +15,7 @@ declare module ellipsoid {
                         (p: __ABBREV.__WebSharper.ObjectProxy): string;
                     };
                     var StateConfiguration : {
-                        (): __ABBREV.__Core.StateConfiguration<__ABBREV.__AngularTemplates.AngularTemplate, __ABBREV.__AngularControllers.AngularController, __ABBREV.__AngularStates.AngularState>;
-                    };
-                }
-                module AngularTemplates {
-                    interface AngularTemplate {
-                    }
-                    var TemplateRelativePath : {
-                        (_arg1: __ABBREV.__AngularTemplates.AngularTemplate): string;
-                    };
-                }
-                module AngularControllers {
-                    interface AngularController {
-                    }
-                    interface ErrorRouteParameters {
-                        id: number;
-                    }
-                    var ControllerConfiguration : {
-                        (): __ABBREV.__Core.ControllerConfiguration<__ABBREV.__AngularControllers.AngularController>;
+                        (): __ABBREV.__Core.StateConfiguration<__ABBREV.__Web.AngularTemplate, __ABBREV.__Web.AngularController, __ABBREV.__AngularStates.AngularState>;
                     };
                 }
                 module AngularStates {
@@ -54,12 +32,25 @@ declare module ellipsoid {
                         (_arg1: __ABBREV.__AngularStates.AngularState): string;
                     };
                 }
+                module AngularControllers {
+                    interface ErrorRouteParameters {
+                        id: number;
+                    }
+                    var ControllerConfiguration : {
+                        (): __ABBREV.__Core.ControllerConfiguration<__ABBREV.__Web.AngularController>;
+                    };
+                }
                 module AngularConfiguration {
                     var UrlConfiguration : {
                         (): __ABBREV.__WebSharper.ObjectProxy;
                     };
                     var UIRouterConfiguration : {
                         (): __ABBREV.__WebSharper.ObjectProxy;
+                    };
+                }
+                module AngularTemplates {
+                    var TemplateRelativePath : {
+                        (_arg1: __ABBREV.__Web.AngularTemplate): string;
                     };
                 }
                 module Remoting {
@@ -75,6 +66,12 @@ declare module ellipsoid {
                         (): string;
                     };
                 }
+                interface AngularTemplate {
+                }
+                interface AngularController {
+                }
+                interface StateImplementation {
+                }
             }
         }
     }
@@ -84,7 +81,6 @@ declare module __ABBREV {
     export import __SharpAngles = ellipsoid.org.SharpAngles;
     export import __WebSharper = IntelliFactory.WebSharper;
     export import __Core = ellipsoid.org.Weatherwax.Core;
-    export import __AngularTemplates = ellipsoid.org.Weatherwax.Web.AngularTemplates;
-    export import __AngularControllers = ellipsoid.org.Weatherwax.Web.AngularControllers;
+    export import __Web = ellipsoid.org.Weatherwax.Web;
     export import __AngularStates = ellipsoid.org.Weatherwax.Web.AngularStates;
 }

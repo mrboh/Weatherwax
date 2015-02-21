@@ -7,7 +7,7 @@
     <ProjectGuid>{2e1f5bec-36bc-45b0-ada4-7198462dc235}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F2A71F9B-5D33-465A-A702-920D77279786}</ProjectTypeGuids>
     <WebSharperProject>Site</WebSharperProject>
-    <WebSharperSourceMap>True</WebSharperSourceMap>
+    <WebSharperSourceMap>False</WebSharperSourceMap>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44301</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
