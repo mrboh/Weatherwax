@@ -37,9 +37,9 @@ module AngularControllers =
                         scope.On(
                             "$stateChangeSuccess",
                                 fun (event, toState: StateConfig, toParams, fromState: StateConfig, fromParams) ->
-                                    let data = toState.Data :?> StateImplementation
+                                    let data = toState.Data :?> State<AngularTemplate,AngularController>
                                     ()
-                        )                )
+                        )       )
             )
             
             .DefineController(AngularController.Home, "HomeController",

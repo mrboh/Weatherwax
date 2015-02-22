@@ -327,16 +327,16 @@
          action=function(s)
          {
           var matchValue,matchValue1,c,u,matchValue2,c1;
-          matchValue=s.Implementation.get_Url();
+          matchValue=s.Implementation.Url;
           if(matchValue.$==0)
            {
-            matchValue1=s.Implementation.get_Controller();
+            matchValue1=s.Implementation.Controller;
             if(matchValue1.$==0)
              {
               stateProvider.state(s.Name,{
                "abstract":true,
-               templateUrl:resolveTemplate(s.Implementation.get_Template()),
-               data:s.Implementation
+               templateUrl:resolveTemplate(s.Implementation.Template),
+               data:s.Implementation.CustomData
               });
               return;
              }
@@ -345,7 +345,7 @@
               c=matchValue1.$0;
               stateProvider.state(s.Name,{
                "abstract":true,
-               templateUrl:resolveTemplate(s.Implementation.get_Template()),
+               templateUrl:resolveTemplate(s.Implementation.Template),
                controller:controllerName(c),
                data:s.Implementation
               });
@@ -355,13 +355,13 @@
           else
            {
             u=matchValue.$0;
-            matchValue2=s.Implementation.get_Controller();
+            matchValue2=s.Implementation.Controller;
             if(matchValue2.$==0)
              {
               stateProvider.state(s.Name,{
                url:u,
-               templateUrl:resolveTemplate(s.Implementation.get_Template()),
-               data:s.Implementation
+               templateUrl:resolveTemplate(s.Implementation.Template),
+               data:s.Implementation.CustomData
               });
               return;
              }
@@ -370,9 +370,9 @@
               c1=matchValue2.$0;
               stateProvider.state(s.Name,{
                url:u,
-               templateUrl:resolveTemplate(s.Implementation.get_Template()),
+               templateUrl:resolveTemplate(s.Implementation.Template),
                controller:controllerName(c1),
-               data:s.Implementation
+               data:s.Implementation.CustomData
               });
               return;
              }

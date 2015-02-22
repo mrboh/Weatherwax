@@ -12,11 +12,16 @@ open AngularStates
 module AngularRouter =
 
     type C = AngularController
-    type SI = StateImplementation
     type T = AngularTemplate
 
     type ErrorRouteParameters =
         { id: int }
+
+    let SI (url, template, controller) =
+        { Url = url
+          Template = template
+          Controller = controller
+          CustomData = None }
 
     // This takes an object containing the URL parameters (p) and converts it into a template path
     let internal errorTemplate = fun (p: obj) -> sprintf "Template/%s" <| TemplateRelativePath (T.Error (p :?> ErrorRouteParameters).id)
@@ -24,13 +29,13 @@ module AngularRouter =
     let StateConfiguration =
         StateConfiguration<AngularTemplate,AngularController,AngularState>(AngularStateName)
             // Abstract states
-            .DefineState(Master None,               SI (None,                       Direct T.Master))
+            .DefineState(Master None,               SI (None,                       Direct T.Master,                None))
 
             // Concrete states
-            .DefineState(Master <| Some Home,       SI (Some "^/",                  Direct T.Home,                  C.Home))
-            .DefineState(Master <| Some About,      SI (Some "^/about",             Direct T.About,                 C.About))
-            .DefineState(Master <| Some Music,      SI (Some "^/music",             Direct T.Music,                 C.Music))
-            .DefineState(Master <| Some Error,      SI (Some "^/error/{id}",        Parameterised errorTemplate,    C.Error))
+            .DefineState(Master <| Some Home,       SI (Some "^/",                  Direct T.Home,                  Some C.Home))
+            .DefineState(Master <| Some About,      SI (Some "^/about",             Direct T.About,                 Some C.About))
+            .DefineState(Master <| Some Music,      SI (Some "^/music",             Direct T.Music,                 Some C.Music))
+            .DefineState(Master <| Some Error,      SI (Some "^/error/{id}",        Parameterised errorTemplate,    Some C.Error))
 
             // Default to the master.home state if no state provided
             .When("", "/")

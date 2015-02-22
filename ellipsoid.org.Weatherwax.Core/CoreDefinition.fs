@@ -34,23 +34,17 @@ type StateTemplateReference<'TTemplate when 'TTemplate : equality> =
     | Direct of 'TTemplate
     | Parameterised of (obj -> string)
 
-type IState<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> =
-    abstract Url: string option
-    abstract Template: StateTemplateReference<'TTemplate>
-    abstract Controller: 'TController option
-
-//[<JavaScript>]
-//[<AbstractClass>]
-//type State<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> (url, template, controller) =
-//    member val Url: string option = url
-//    member val Template: StateTemplateReference<'TTemplate> = template
-//    member val Controller: 'TController option = controller
+type State<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> =
+    { Url: string option
+      Template: StateTemplateReference<'TTemplate>
+      Controller: 'TController option
+      CustomData: obj option }
 
 [<JavaScript>]
 type StateInfo<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> =
     { State: 'TState
       Name: string
-      Implementation: IState<'TTemplate,'TController>}
+      Implementation: State<'TTemplate,'TController>}
 
 [<JavaScript>]
 type StateConfiguration<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> (nameMapper: 'TState -> string) =
@@ -60,7 +54,7 @@ type StateConfiguration<'TTemplate,'TController,'TState when 'TTemplate : equali
 
     member this.States with get() = _states
     member this.Whens with get() = _whens
-    member this.DefineState (state: 'TState, implementation: IState<'TTemplate,'TController>) =
+    member this.DefineState (state: 'TState, implementation: State<'TTemplate,'TController>) =
         let name = nameMapper state
 
         // Check if state has already been defined

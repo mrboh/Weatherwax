@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,AngularModules;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,PrintfHelpers,AngularModules;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -179,6 +179,17 @@
        })
       },
       AngularRouter:{
+       SI:function(url,template,controller)
+       {
+        return{
+         Url:url,
+         Template:template,
+         Controller:controller,
+         CustomData:{
+          $:0
+         }
+        };
+       },
        StateConfiguration:Runtime.Field(function()
        {
         var arg0,arg01,arg02,arg03;
@@ -214,7 +225,7 @@
          $0:{
           $:0
          }
-        },StateImplementation.New({
+        },AngularRouter.SI({
          $:0
         },{
          $:0,
@@ -226,7 +237,7 @@
         })).DefineState({
          $:0,
          $0:arg0
-        },StateImplementation.New({
+        },AngularRouter.SI({
          $:1,
          $0:"^/"
         },{
@@ -242,7 +253,7 @@
         })).DefineState({
          $:0,
          $0:arg01
-        },StateImplementation.New({
+        },AngularRouter.SI({
          $:1,
          $0:"^/about"
         },{
@@ -258,7 +269,7 @@
         })).DefineState({
          $:0,
          $0:arg02
-        },StateImplementation.New({
+        },AngularRouter.SI({
          $:1,
          $0:"^/music"
         },{
@@ -274,7 +285,7 @@
         })).DefineState({
          $:0,
          $0:arg03
-        },StateImplementation.New({
+        },AngularRouter.SI({
          $:1,
          $0:"^/error/{id}"
         },{
@@ -367,31 +378,7 @@
        {
         return"siteletApp";
        })
-      },
-      StateImplementation:Runtime.Class({
-       get_Controller:function()
-       {
-        return this.controller;
-       },
-       get_Template:function()
-       {
-        return this.template;
-       },
-       get_Url:function()
-       {
-        return this.url;
-       }
-      },{
-       New:function(url,template,controller)
-       {
-        var r;
-        r=Runtime.New(this,{});
-        r.url=url;
-        r.template=template;
-        r.controller=controller;
-        return r;
-       }
-      })
+      }
      }
     }
    }
@@ -431,7 +418,6 @@
   AngularTemplates=Runtime.Safe(Web.AngularTemplates);
   AngularControllers=Runtime.Safe(Web.AngularControllers);
   StateConfiguration=Runtime.Safe(Core.StateConfiguration);
-  StateImplementation=Runtime.Safe(Web.StateImplementation);
   PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
   return AngularModules=Runtime.Safe(Web.AngularModules);
  });

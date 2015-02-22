@@ -127,18 +127,19 @@ declare module ellipsoid {
                 }
                 interface StateTemplateReference<_T1> {
                 }
-                interface IState<_T1, _T2> {
-                    get_Url(): __ABBREV.__WebSharper.OptionProxy<string>;
-                    get_Template(): __ABBREV.__Core.StateTemplateReference<_T1>;
-                    get_Controller(): __ABBREV.__WebSharper.OptionProxy<_T2>;
+                interface State<_T1, _T2> {
+                    Url: __ABBREV.__WebSharper.OptionProxy<string>;
+                    Template: __ABBREV.__Core.StateTemplateReference<_T1>;
+                    Controller: __ABBREV.__WebSharper.OptionProxy<_T2>;
+                    CustomData: __ABBREV.__WebSharper.OptionProxy<__ABBREV.__WebSharper.ObjectProxy>;
                 }
                 interface StateInfo<_T1, _T2, _T3> {
                     State: _T3;
                     Name: string;
-                    Implementation: __ABBREV.__Core.IState<_T1, _T2>;
+                    Implementation: any;
                 }
                 interface StateConfiguration<_T1, _T2, _T3> {
-                    DefineState(state: _T3, implementation: __ABBREV.__Core.IState<_T1, _T2>): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
+                    DefineState(state: _T3, implementation: any): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
                     When(whenPath: string, toPath: string): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
                     Otherwise(): __ABBREV.__WebSharper.OptionProxy<string>;
                     Otherwise1(path: string): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;

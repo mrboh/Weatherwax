@@ -11,6 +11,9 @@ declare module ellipsoid {
                     interface ErrorRouteParameters {
                         id: number;
                     }
+                    var SI : {
+                        <_M1, _M2>(url: __ABBREV.__WebSharper.OptionProxy<string>, template: __ABBREV.__Core.StateTemplateReference<_M1>, controller: __ABBREV.__WebSharper.OptionProxy<_M2>): any;
+                    };
                     var errorTemplate : {
                         (p: __ABBREV.__WebSharper.ObjectProxy): string;
                     };
@@ -69,11 +72,6 @@ declare module ellipsoid {
                 interface AngularTemplate {
                 }
                 interface AngularController {
-                }
-                interface StateImplementation {
-                    get_Url(): __ABBREV.__WebSharper.OptionProxy<string>;
-                    get_Template(): __ABBREV.__Core.StateTemplateReference<__ABBREV.__Web.AngularTemplate>;
-                    get_Controller(): __ABBREV.__WebSharper.OptionProxy<__ABBREV.__Web.AngularController>;
                 }
             }
         }

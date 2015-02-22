@@ -37,13 +37,6 @@ type AngularController =
     | Music
     | Error
 
-[<JavaScript>]
-type StateImplementation (url, template, ?controller) =
-    interface IState<AngularTemplate,AngularController> with
-        member this.Url = url
-        member this.Template = template
-        member this.Controller = controller
-
 module Configuration =
 
     [<JavaScript>]
