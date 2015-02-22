@@ -71,6 +71,9 @@ declare module ellipsoid {
                 interface AngularController {
                 }
                 interface StateImplementation {
+                    get_Url(): __ABBREV.__WebSharper.OptionProxy<string>;
+                    get_Template(): __ABBREV.__Core.StateTemplateReference<__ABBREV.__Web.AngularTemplate>;
+                    get_Controller(): __ABBREV.__WebSharper.OptionProxy<__ABBREV.__Web.AngularController>;
                 }
             }
         }

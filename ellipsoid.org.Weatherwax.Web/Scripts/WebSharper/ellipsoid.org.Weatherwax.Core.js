@@ -227,30 +227,6 @@
         return r;
        }
       }),
-      State:Runtime.Class({
-       get_Controller:function()
-       {
-        return this["Controller@"];
-       },
-       get_Template:function()
-       {
-        return this["Template@"];
-       },
-       get_Url:function()
-       {
-        return this["Url@"];
-       }
-      },{
-       New:function(url,template,controller)
-       {
-        var r;
-        r=Runtime.New(this,{});
-        r["Url@"]=url;
-        r["Template@"]=template;
-        r["Controller@"]=controller;
-        return r;
-       }
-      }),
       StateConfiguration:Runtime.Class({
        DefineState:function(state,implementation)
        {

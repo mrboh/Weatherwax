@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,State,AngularModules;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,ellipsoid,org,Weatherwax,Core,AngularExpression1,Dependencies,Providers,ControllerConfiguration,AngularExpression2,Services,jQuery,WebSharper,Html,Client,Default,List,Remoting,AjaxRemotingProvider,Concurrency,Operators,ClientDirectives,T,angular,Web,Configuration,Utilities,AngularConfiguration,AngularRouter,AngularStates,AngularTemplates,AngularControllers,StateConfiguration,StateImplementation,PrintfHelpers,AngularModules;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -368,10 +368,28 @@
         return"siteletApp";
        })
       },
-      StateImplementation:Runtime.Class({},{
+      StateImplementation:Runtime.Class({
+       get_Controller:function()
+       {
+        return this.controller;
+       },
+       get_Template:function()
+       {
+        return this.template;
+       },
+       get_Url:function()
+       {
+        return this.url;
+       }
+      },{
        New:function(url,template,controller)
        {
-        return Runtime.New(this,State.New(url,template,controller));
+        var r;
+        r=Runtime.New(this,{});
+        r.url=url;
+        r.template=template;
+        r.controller=controller;
+        return r;
        }
       })
      }
@@ -415,12 +433,10 @@
   StateConfiguration=Runtime.Safe(Core.StateConfiguration);
   StateImplementation=Runtime.Safe(Web.StateImplementation);
   PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
-  State=Runtime.Safe(Core.State);
   return AngularModules=Runtime.Safe(Web.AngularModules);
  });
  Runtime.OnLoad(function()
  {
-  Runtime.Inherit(StateImplementation,State);
   Configuration.AppName();
   AngularRouter.StateConfiguration();
   AngularModules.SiteletApp();
