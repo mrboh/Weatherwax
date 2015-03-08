@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Html,Client,Default,Unchecked,Seq,Operators,List,T,ellipsoid,org,Weatherwax,Core,Dependency,Enumerator,PrintfHelpers,AngularExpression2,Dependencies,Providers,Services;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Html,Client,Default,ellipsoid,org,Weatherwax,Core,Dependency,AngularExpression1,Dependencies,Services,Enumerator,Utilities,AngularExpression2,Providers,Arrays,PrintfHelpers,String,Seq,Math,Strings,Events;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -108,56 +108,17 @@
         return Default.Tags().NewTag("ui-view",x);
        }
       },
-      ControllerConfiguration:Runtime.Class({
-       ControllerName:function(controller)
-       {
-        var p,l,matchValue;
-        p=function(c)
-        {
-         return Unchecked.Equals(c.Controller,controller);
-        };
-        l=this._controllers;
-        matchValue=Seq.tryFind(p,l);
-        return matchValue.$==0?Operators.FailWith("Controller not defined in ControllerConfiguration"):matchValue.$0.Name;
-       },
-       DefineController:function(controller,name,implementation)
-       {
-        var p,l;
-        p=function(c)
-        {
-         return Unchecked.Equals(c.Controller,controller);
-        };
-        l=this._controllers;
-        if(Seq.tryFind(p,l).$==0)
-         {
-          this._controllers=List.append(List.ofArray([{
-           Controller:controller,
-           Name:name,
-           Implementation:implementation
-          }]),this._controllers);
-         }
-        else
-         {
-          Operators.FailWith("Controller has already been defined");
-         }
-        return this;
-       },
-       get_Controllers:function()
-       {
-        return this._controllers;
-       }
-      },{
-       New:function()
-       {
-        var r;
-        r=Runtime.New(this,{});
-        r._controllers=Runtime.New(T,{
-         $:0
-        });
-        return r;
-       }
-      }),
       Dependencies:{
+       Events:{
+        StateChangeSuccess:Runtime.Field(function()
+        {
+         return"$stateChangeSuccess";
+        }),
+        ViewContentLoaded:Runtime.Field(function()
+        {
+         return"$viewContentLoaded";
+        })
+       },
        Other:{
         StateParams:function()
         {
@@ -191,9 +152,17 @@
         {
          return Dependency.New("$scope");
         },
+        Location:Runtime.Field(function()
+        {
+         return Dependency.New("$location");
+        }),
         RootScope:Runtime.Field(function()
         {
          return Dependency.New("$rootScope");
+        }),
+        Route:Runtime.Field(function()
+        {
+         return Dependency.New("$route");
         }),
         Sce:Runtime.Field(function()
         {
@@ -227,169 +196,95 @@
         return r;
        }
       }),
-      StateConfiguration:Runtime.Class({
-       DefineState:function(state,implementation)
-       {
-        var name,p,l;
-        name=this.nameMapper.call(null,state);
-        p=function(s)
-        {
-         return s.Name===name;
-        };
-        l=this._states;
-        if(Seq.tryFind(p,l).$==0)
-         {
-          this._states=List.append(List.ofArray([{
-           State:state,
-           Name:name,
-           Implementation:implementation
-          }]),this._states);
-         }
-        else
-         {
-          Operators.FailWith("State has already been defined");
-         }
-        return this;
-       },
-       Otherwise:function()
-       {
-        return this._otherwise;
-       },
-       Otherwise1:function(path)
-       {
-        this._otherwise={
-         $:1,
-         $0:path
-        };
-        return this;
-       },
-       When:function(whenPath,toPath)
-       {
-        this._whens=List.append(List.ofArray([[whenPath,toPath]]),this._whens);
-        return this;
-       },
-       get_States:function()
-       {
-        return this._states;
-       },
-       get_Whens:function()
-       {
-        return this._whens;
-       }
-      },{
-       New:function(nameMapper)
-       {
-        var r;
-        r=Runtime.New(this,{});
-        r.nameMapper=nameMapper;
-        r._states=Runtime.New(T,{
-         $:0
-        });
-        r._whens=Runtime.New(T,{
-         $:0
-        });
-        r._otherwise={
-         $:0
-        };
-        return r;
-       }
-      }),
       Utilities:{
-       "Module.Controllers":function(_this,config)
+       "InjectorService.TransitionToState":function(_this,newState)
        {
-        var inputSequence,enumerator,c;
-        inputSequence=config.get_Controllers();
-        enumerator=Enumerator.Get(inputSequence);
+        _this.invoke(AngularExpression1.New(Services.State()).Resolve(function(state)
+        {
+         state.go(newState);
+        }));
+       },
+       "Module.Controller":function(_this,controller)
+       {
+        _this.controller(controller.get_Name(),controller.get_Implementation());
+        return _this;
+       },
+       "Module.Controllers":function(_this,controllers)
+       {
+        var enumerator;
+        enumerator=Enumerator.Get(controllers);
         while(enumerator.MoveNext())
          {
-          c=enumerator.get_Current();
-          _this.controller(c.Name,c.Implementation);
+          Utilities["Module.Controller"](_this,enumerator.get_Current());
          }
         return _this;
        },
-       "Module.States":function(_this,config,nameMapper,templateRelativePath,controllerConfig)
+       "Module.States":function(_this,stateDefinitions,otherwise,redirects)
        {
-        var resolveTemplate,controllerName;
-        resolveTemplate=function(t)
-        {
-         return t.$==1?t.$0:"Template/"+PrintfHelpers.toSafe(templateRelativePath(t.$0));
-        };
-        controllerName=function(c)
-        {
-         return controllerConfig.ControllerName(c);
-        };
         return _this.config(AngularExpression2.New(Providers.State(),Providers.UrlRouter()).Resolve(Runtime.Tupled(function(tupledArg)
         {
-         var stateProvider,urlRouterProvider,x,action,x1,action1,matchValue3;
+         var stateProvider,urlRouterProvider;
          stateProvider=tupledArg[0];
          urlRouterProvider=tupledArg[1];
-         x=config.get_States();
-         action=function(s)
+         Arrays.iter(function(s)
          {
-          var matchValue,matchValue1,c,u,matchValue2,c1;
-          matchValue=s.Implementation.Url;
-          if(matchValue.$==0)
+          var matchValue,url,paramLength,baseUrl,matchValue1;
+          matchValue=s.Url;
+          url=matchValue.$==0?null:matchValue.$0;
+          paramLength=s.UrlParametersToPassToTemplate.get_Length();
+          baseUrl="/Template/"+PrintfHelpers.toSafe(s.Name)+"/"+Global.String(paramLength)+"/";
+          matchValue1=s.ControllerName;
+          stateProvider.state(s.Name,{
+           url:url,
+           templateUrl:paramLength===0?function()
            {
-            matchValue1=s.Implementation.Controller;
-            if(matchValue1.$==0)
-             {
-              stateProvider.state(s.Name,{
-               "abstract":true,
-               templateUrl:resolveTemplate(s.Implementation.Template),
-               data:s.Implementation.CustomData
-              });
-              return;
-             }
-            else
-             {
-              c=matchValue1.$0;
-              stateProvider.state(s.Name,{
-               "abstract":true,
-               templateUrl:resolveTemplate(s.Implementation.Template),
-               controller:controllerName(c),
-               data:s.Implementation
-              });
-              return;
-             }
-           }
-          else
+            return baseUrl;
+           }:function(o)
            {
-            u=matchValue.$0;
-            matchValue2=s.Implementation.Controller;
-            if(matchValue2.$==0)
+            var folder,list;
+            folder=function(c)
+            {
+             return function(p)
              {
-              stateProvider.state(s.Name,{
-               url:u,
-               templateUrl:resolveTemplate(s.Implementation.Template),
-               data:s.Implementation.CustomData
-              });
-              return;
-             }
-            else
-             {
-              c1=matchValue2.$0;
-              stateProvider.state(s.Name,{
-               url:u,
-               templateUrl:resolveTemplate(s.Implementation.Template),
-               controller:controllerName(c1),
-               data:s.Implementation.CustomData
-              });
-              return;
-             }
-           }
-         };
-         Seq.iter(action,x);
-         x1=config.get_Whens();
-         action1=Runtime.Tupled(function(w)
-         {
-          urlRouterProvider.when(w[0],w[1]);
-         });
-         Seq.iter(action1,x1);
-         matchValue3=config.Otherwise();
-         return matchValue3.$==0?null:void urlRouterProvider.otherwise(matchValue3.$0);
+              var copyOfStruct;
+              copyOfStruct=o[p];
+              return c+String(copyOfStruct);
+             };
+            };
+            list=s.UrlParametersToPassToTemplate;
+            return Seq.fold(folder,baseUrl,list);
+           },
+           controller:matchValue1.$==0?null:matchValue1.$0,
+           data:s.CustomData
+          });
+          return;
+         },stateDefinitions);
+         if(redirects.$==1)
+          {
+           Arrays.iter(function(r)
+           {
+            urlRouterProvider.when(r.UrlIn,r.UrlOut);
+           },redirects.$0);
+          }
+         return otherwise.$==0?null:void urlRouterProvider.otherwise(otherwise.$0);
         })));
        }
-      }
+      },
+      WeatherwaxController:Runtime.Class({
+       FromSourceFilename:function(f)
+       {
+        var startIndex,ix,ct;
+        startIndex=Math.max(f.lastIndexOf(String.fromCharCode(92)),f.lastIndexOf(String.fromCharCode(47)));
+        ix=startIndex+1;
+        ct=f.length-Math.max(startIndex,0)-3;
+        return Strings.Substring(f,ix,ct);
+       }
+      },{
+       New:function()
+       {
+        return Runtime.New(this,{});
+       }
+      })
      }
     }
    }
@@ -401,22 +296,25 @@
   Html=Runtime.Safe(WebSharper.Html);
   Client=Runtime.Safe(Html.Client);
   Default=Runtime.Safe(Client.Default);
-  Unchecked=Runtime.Safe(WebSharper.Unchecked);
-  Seq=Runtime.Safe(WebSharper.Seq);
-  Operators=Runtime.Safe(WebSharper.Operators);
-  List=Runtime.Safe(WebSharper.List);
-  T=Runtime.Safe(List.T);
   ellipsoid=Runtime.Safe(Global.ellipsoid);
   org=Runtime.Safe(ellipsoid.org);
   Weatherwax=Runtime.Safe(org.Weatherwax);
   Core=Runtime.Safe(Weatherwax.Core);
   Dependency=Runtime.Safe(Core.Dependency);
-  Enumerator=Runtime.Safe(WebSharper.Enumerator);
-  PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
-  AngularExpression2=Runtime.Safe(Core.AngularExpression2);
+  AngularExpression1=Runtime.Safe(Core.AngularExpression1);
   Dependencies=Runtime.Safe(Core.Dependencies);
+  Services=Runtime.Safe(Dependencies.Services);
+  Enumerator=Runtime.Safe(WebSharper.Enumerator);
+  Utilities=Runtime.Safe(Core.Utilities);
+  AngularExpression2=Runtime.Safe(Core.AngularExpression2);
   Providers=Runtime.Safe(Dependencies.Providers);
-  return Services=Runtime.Safe(Dependencies.Services);
+  Arrays=Runtime.Safe(WebSharper.Arrays);
+  PrintfHelpers=Runtime.Safe(WebSharper.PrintfHelpers);
+  String=Runtime.Safe(Global.String);
+  Seq=Runtime.Safe(WebSharper.Seq);
+  Math=Runtime.Safe(Global.Math);
+  Strings=Runtime.Safe(WebSharper.Strings);
+  return Events=Runtime.Safe(Dependencies.Events);
  });
  Runtime.OnLoad(function()
  {
@@ -424,12 +322,16 @@
   Services.State();
   Services.Scope();
   Services.Sce();
+  Services.Route();
   Services.RootScope();
+  Services.Location();
   Dependencies.Router();
   Providers.UrlRouter();
   Providers.UrlMatcherFactory();
   Providers.State();
   Providers.Location();
+  Events.ViewContentLoaded();
+  Events.StateChangeSuccess();
   return;
  });
 }());

@@ -38,15 +38,19 @@ declare module ellipsoid {
                     };
                 }
                 module Utilities {
+                    interface UntypedStateManager {
+                    }
+                    var Module_Controller : {
+                        (_this: __ABBREV.__SharpAngles.Module, controller: __ABBREV.__Core.WeatherwaxController): __ABBREV.__SharpAngles.Module;
+                    };
                     var Module_Controllers : {
-                        <_M1>(_this: __ABBREV.__SharpAngles.Module, config: __ABBREV.__Core.ControllerConfiguration<_M1>): __ABBREV.__SharpAngles.Module;
+                        (_this: __ABBREV.__SharpAngles.Module, controllers: __ABBREV.__List.T<__ABBREV.__Core.WeatherwaxController>): __ABBREV.__SharpAngles.Module;
                     };
                     var Module_States : {
-                        <_M1, _M2, _M3>(_this: __ABBREV.__SharpAngles.Module, config: __ABBREV.__Core.StateConfiguration<_M1, _M2, _M3>, nameMapper: {
-                            (x: _M3): string;
-                        }, templateRelativePath: {
-                            (x: _M1): string;
-                        }, controllerConfig: __ABBREV.__Core.ControllerConfiguration<_M2>): __ABBREV.__SharpAngles.Module;
+                        (_this: __ABBREV.__SharpAngles.Module, stateDefinitions: any[], otherwise: __ABBREV.__WebSharper.OptionProxy<string>, redirects: __ABBREV.__WebSharper.OptionProxy<any[]>): __ABBREV.__SharpAngles.Module;
+                    };
+                    var InjectorService_TransitionToState : {
+                        (_this: __ABBREV.__Auto.InjectorService, newState: string): void;
                     };
                 }
                 module Dependencies {
@@ -73,8 +77,14 @@ declare module ellipsoid {
                         var CustomScope : {
                             <_M1>(): __ABBREV.__Core.Dependency<_M1>;
                         };
+                        var Location : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__SharpAngles.LocationService>;
+                        };
                         var RootScope : {
                             (): __ABBREV.__Core.Dependency<__ABBREV.__SharpAngles.RootScopeService>;
+                        };
+                        var Route : {
+                            (): __ABBREV.__Core.Dependency<__ABBREV.__Route.RouteService>;
                         };
                         var Sce : {
                             (): __ABBREV.__Core.Dependency<__ABBREV.__SharpAngles.SCEService>;
@@ -84,6 +94,14 @@ declare module ellipsoid {
                         };
                         var State : {
                             (): __ABBREV.__Core.Dependency<__ABBREV.__UI.StateService>;
+                        };
+                    }
+                    module Events {
+                        var StateChangeSuccess : {
+                            (): string;
+                        };
+                        var ViewContentLoaded : {
+                            (): string;
                         };
                     }
                     var Router : {
@@ -112,58 +130,49 @@ declare module ellipsoid {
                 interface AngularExpression3<_T1, _T2, _T3> {
                     Resolve<_M1>(lambda: __ABBREV.__WebSharper.F3<_T1, _T2, _T3, _M1>): __ABBREV.__WebSharper.ObjectProxy;
                 }
-                interface InheritableProperty<_T1> {
-                    value: _T1;
+                interface WeatherwaxError {
                 }
-                interface ControllerInfo<_T1> {
-                    Controller: _T1;
-                    Name: string;
-                    Implementation: __ABBREV.__WebSharper.ObjectProxy;
+                interface WeatherwaxAction {
                 }
-                interface ControllerConfiguration<_T1> {
-                    DefineController<_M1>(controller: _T1, name: string, implementation: _M1): __ABBREV.__Core.ControllerConfiguration<_T1>;
-                    ControllerName(controller: _T1): string;
-                    get_Controllers(): __ABBREV.__List.T<any>;
-                }
-                interface StateTemplateReference<_T1> {
-                }
-                interface State<_T1, _T2> {
-                    Url: __ABBREV.__WebSharper.OptionProxy<string>;
-                    Template: __ABBREV.__Core.StateTemplateReference<_T1>;
-                    Controller: __ABBREV.__WebSharper.OptionProxy<_T2>;
-                    CustomData: __ABBREV.__WebSharper.OptionProxy<__ABBREV.__WebSharper.ObjectProxy>;
-                }
-                interface StateInfo<_T1, _T2, _T3> {
-                    State: _T3;
-                    Name: string;
-                    Implementation: any;
-                }
-                interface StateConfiguration<_T1, _T2, _T3> {
-                    DefineState(state: _T3, implementation: any): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
-                    When(whenPath: string, toPath: string): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
-                    Otherwise(): __ABBREV.__WebSharper.OptionProxy<string>;
-                    Otherwise1(path: string): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
-                    get_States(): __ABBREV.__List.T<any>;
-                    get_Whens(): __ABBREV.__List.T<any>;
+                interface ISettings {
+                    GenerateSnapshot(baseUrl: string, fragment: string): string;
+                    get_ClientControl(): __ABBREV.__Web.Control;
+                    get_FileTemplateRootPath(): string;
+                    get_MainHtmlPath(): string;
+                    get_TemplateHtmlPath(): string;
                 }
                 interface TemplateFile {
                 }
-                interface Template {
+                interface WeatherwaxController {
+                    FromSourceFilename(f: string): string;
                 }
-                interface ISettings<_T1, _T2, _T3> {
-                    GenerateSnapshot(baseUrl: string, fragment: string): string;
-                    TemplateRelativePath(x0: _T1): string;
-                    TemplateImplementation(x0: _T1): __ABBREV.__Core.Template;
-                    get_ClientControl(): __ABBREV.__Web.Control;
-                    get_ControllerConfiguration(): __ABBREV.__Core.ControllerConfiguration<_T2>;
-                    get_FileTemplateRootPath(): string;
-                    get_MainHtmlPath(): string;
-                    get_StateConfiguration(): __ABBREV.__Core.StateConfiguration<_T1, _T2, _T3>;
-                    get_TemplateHtmlPath(): string;
+                interface Template<_T1> {
                 }
-                interface WeatherwaxError {
+                interface WeatherwaxBaseState {
                 }
-                interface Action<_T1> {
+                interface WeatherwaxState<_T1> {
+                }
+                interface StateDefinition {
+                    Name: string;
+                    Url: __ABBREV.__WebSharper.OptionProxy<string>;
+                    UrlParametersToPassToTemplate: __ABBREV.__List.T<string>;
+                    ControllerName: __ABBREV.__WebSharper.OptionProxy<string>;
+                    CustomData: __ABBREV.__WebSharper.OptionProxy<__ABBREV.__WebSharper.ObjectProxy>;
+                }
+                interface StateWhen {
+                    UrlIn: string;
+                    UrlOut: string;
+                }
+                interface Parameter<_T1> {
+                }
+                interface StringParameter {
+                }
+                interface IntParameter {
+                }
+                interface FloatParameter {
+                }
+                interface InheritableProperty<_T1> {
+                    value: _T1;
                 }
                 interface WebSharperTemplateBase {
                     Body: __ABBREV.__List.T<any>;
@@ -171,7 +180,7 @@ declare module ellipsoid {
                 interface AngularTemplateBase {
                     Content: __ABBREV.__List.T<any>;
                 }
-                interface AngularWebsite<_T1, _T2, _T3> {
+                interface WeatherwaxWebsite<_T1> {
                 }
             }
         }
@@ -202,7 +211,9 @@ declare module __ABBREV {
     export import __Client = IntelliFactory.WebSharper.Html.Client;
     export import __SharpAngles = ellipsoid.org.SharpAngles;
     export import __Core = ellipsoid.org.Weatherwax.Core;
-    export import __UI = ellipsoid.org.SharpAngles.UI;
     export import __List = IntelliFactory.WebSharper.List;
+    export import __Auto = ellipsoid.org.SharpAngles.Auto;
+    export import __UI = ellipsoid.org.SharpAngles.UI;
+    export import __Route = ellipsoid.org.SharpAngles.Route;
     export import __Web = IntelliFactory.WebSharper.Web;
 }

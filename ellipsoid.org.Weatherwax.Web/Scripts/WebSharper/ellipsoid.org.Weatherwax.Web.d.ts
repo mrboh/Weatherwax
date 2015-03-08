@@ -2,46 +2,39 @@ declare module ellipsoid {
     module org {
         module Weatherwax {
             module Web {
-                module AngularModules {
-                    var SiteletApp : {
-                        (): __ABBREV.__SharpAngles.Module;
-                    };
-                }
-                module AngularRouter {
-                    interface ErrorRouteParameters {
-                        id: number;
+                module Controllers {
+                    interface BaseController {
+                        get_Name(): string;
+                        get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
-                    var SI : {
-                        <_M1, _M2>(url: __ABBREV.__WebSharper.OptionProxy<string>, template: __ABBREV.__Core.StateTemplateReference<_M1>, controller: __ABBREV.__WebSharper.OptionProxy<_M2>): any;
-                    };
-                    var errorTemplate : {
-                        (p: __ABBREV.__WebSharper.ObjectProxy): string;
-                    };
-                    var StateConfiguration : {
-                        (): __ABBREV.__Core.StateConfiguration<__ABBREV.__Web.AngularTemplate, __ABBREV.__Web.AngularController, __ABBREV.__AngularStates.AngularState>;
-                    };
-                }
-                module AngularStates {
-                    interface AngularState {
+                    interface HomeController {
+                        get_Name(): string;
+                        get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
+                    interface AboutController {
+                        get_Name(): string;
+                        get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
+                    }
+                    interface MusicController {
+                        get_Name(): string;
+                        get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
+                    }
+                    interface ErrorController {
+                        get_Name(): string;
+                        get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
+                    }
+                }
+                module States {
                     interface MasterState {
                     }
-                    var subState : {
-                        <_M1>(name: string, value: __ABBREV.__WebSharper.OptionProxy<_M1>, matcher: {
-                            (x: _M1): string;
-                        }): string;
-                    };
-                    var AngularStateName : {
-                        (_arg1: __ABBREV.__AngularStates.AngularState): string;
-                    };
-                }
-                module AngularControllers {
-                    interface ErrorRouteParameters {
-                        id: number;
+                    interface Master_HomeState {
                     }
-                    var ControllerConfiguration : {
-                        (): __ABBREV.__Core.ControllerConfiguration<__ABBREV.__Web.AngularController>;
-                    };
+                    interface Master_AboutState {
+                    }
+                    interface Master_MusicState {
+                    }
+                    interface Master_ErrorState {
+                    }
                 }
                 module AngularConfiguration {
                     var UrlConfiguration : {
@@ -49,11 +42,6 @@ declare module ellipsoid {
                     };
                     var UIRouterConfiguration : {
                         (): __ABBREV.__WebSharper.ObjectProxy;
-                    };
-                }
-                module AngularTemplates {
-                    var TemplateRelativePath : {
-                        (_arg1: __ABBREV.__Web.AngularTemplate): string;
                     };
                 }
                 module Remoting {
@@ -69,9 +57,12 @@ declare module ellipsoid {
                         (): string;
                     };
                 }
-                interface AngularTemplate {
+                interface AngularState {
                 }
-                interface AngularController {
+                interface StateDefinitionService {
+                    States: any[];
+                }
+                interface Settings {
                 }
             }
         }
@@ -79,9 +70,5 @@ declare module ellipsoid {
 }
 declare module __ABBREV {
     
-    export import __SharpAngles = ellipsoid.org.SharpAngles;
     export import __WebSharper = IntelliFactory.WebSharper;
-    export import __Core = ellipsoid.org.Weatherwax.Core;
-    export import __Web = ellipsoid.org.Weatherwax.Web;
-    export import __AngularStates = ellipsoid.org.Weatherwax.Web.AngularStates;
 }

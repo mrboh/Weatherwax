@@ -38,10 +38,17 @@ module Dependencies =
     let Router = "ngRoute"
     let UIRouter = "ui.router"
 
+    module Events =
+
+        let StateChangeSuccess = "$stateChangeSuccess"
+        let ViewContentLoaded = "$viewContentLoaded"
+
     module Services =
         
         let CustomScope<'T when 'T :> Scope> = Dependency<'T> ("$scope")
+        let Location = Dependency<LocationService> ("$location")
         let RootScope = Dependency<RootScopeService> ("$rootScope")
+        let Route = Dependency<Route.RouteService> ("$route")
         let Sce = Dependency<SCEService> ("$sce")
         let Scope = Dependency<Scope> ("$scope")
         let State = Dependency<StateService> ("$state")

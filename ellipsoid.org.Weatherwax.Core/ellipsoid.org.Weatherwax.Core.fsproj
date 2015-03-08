@@ -63,7 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ellipsoid.org.SharpAngles">
-      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.2-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
+      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.2.3-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ellipsoid.org.SharpAngles.UI">

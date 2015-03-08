@@ -14,5 +14,5 @@ module AngularScopes =
 
     [<AbstractClass>]
     type MusicScope =
-        inherit Scope
+        inherit BaseScope
         [<DefaultValue>] val mutable songs: Song array

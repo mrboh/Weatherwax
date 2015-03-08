@@ -1,6 +1,10 @@
 declare module ellipsoid {
     module org {
         module SharpAngles {
+            module Auto {
+                interface InjectorService {
+                }
+            }
             module Mock {
                 interface RequestHandler {
                 }
@@ -53,6 +57,8 @@ declare module ellipsoid {
             }
             interface RootScopeService {
             }
+            interface QService<_T1> {
+            }
             interface Promise<_T1> {
             }
             interface LogService {
@@ -72,6 +78,8 @@ declare module ellipsoid {
             interface HttpBackendService {
             }
             interface HttpPromise<_T1> {
+            }
+            interface Deferred<_T1> {
             }
             interface AngularStaticVersion {
             }

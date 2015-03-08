@@ -46,7 +46,7 @@ module ServerDirectives =
     let NgShow x = Html.NewAttribute "ng-show" x
     let NgSrc x = Html.NewAttribute "ng-src" x
     let SRef x = Html.NewAttribute "ui-sref" x
-
+    
     let MemberBindingString (unitSelector: Expr<'T -> _>) =
         bindingString "%s" <| GetMemberName unitSelector
 

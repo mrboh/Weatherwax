@@ -6,6 +6,8 @@ open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.ClientDirectives
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Html
+open IntelliFactory.WebSharper.Html.Client
+open IntelliFactory.WebSharper.JavaScript
 open IntelliFactory.WebSharper.Sitelets
 open System
 open System.Diagnostics
@@ -23,19 +25,12 @@ open System.Web.Configuration
     - ellipsoid.org.Weatherwax.Core
 *)
 
-type AngularTemplate =
+type AngularState =
     | Master
-    | Home
-    | About
-    | Music
-    | Error of int
-
-type AngularController =
-    | Base
-    | Home
-    | About
-    | Music
-    | Error
+    | Master_Home
+    | Master_About
+    | Master_Music
+    | Master_Error
 
 module Configuration =
 
@@ -61,10 +56,6 @@ module Configuration =
             let output = phantomJsProcess.StandardOutput.ReadToEnd()
             let stopResult = phantomJsProcess.WaitForExit(10000)
 
-            // WebSharper uses non-HTML-encoded strings in its meta tags (specifically the "generator" tag)
-            // but the spec (and what PhantomJs produces) is to use HTML-encoded strings. Therefore the output
-            // from this method will generate JS errors if viewed in a web browser but should be sufficient
-            // from the point of view of a crawler.
             return output
         }
         |> Async.RunSynchronously

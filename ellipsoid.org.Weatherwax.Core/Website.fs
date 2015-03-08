@@ -1,45 +1,44 @@
 namespace ellipsoid.org.Weatherwax.Core
 
-open ellipsoid.org.SharpAngles
-open ellipsoid.org.Weatherwax.Core
+open ellipsoid.org.Weatherwax.Core.Utilities
 open IntelliFactory.WebSharper
-open IntelliFactory.WebSharper.Html.Server
 open IntelliFactory.WebSharper.Sitelets
+open IntelliFactory.WebSharper.Html.Server
+open ServerDirectives
 open System
 open System.IO
 open System.Web
-open System.Xml
-
-type WeatherwaxError =
-    | Unspecified
-
-type Action<'T> =
-    | [<CompiledName "">]            Index
-    |                                Template of 'T
-    |                                Error of WeatherwaxError
-    // | [<CompiledName "sitemap.xml">] Sitemap
 
 type WebSharperTemplateBase =
-    { Body: Content.HtmlElement list }
+    { Body: Element list }
 
 type AngularTemplateBase =
-    { Content: Content.HtmlElement list }
+    { Content: Element list }
 
-type AngularWebsite<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> (settings: ISettings<'TTemplate,'TController,'TState>) =    
-    let appTemplate =
-        Content.Template<WebSharperTemplateBase>(settings.MainHtmlPath)
-            .With ("body", fun template -> template.Body)
-    let angularTemplate =
-        Content.Template<AngularTemplateBase>(settings.TemplateHtmlPath)
-            .With ("content", fun template -> template.Content)
-    interface IWebsite<Action<'TTemplate>> with
-        member this.Sitelet = 
+type WeatherwaxWebsite<'TState when 'TState : equality> (settings: ISettings) =    
+    let weatherwaxRpcHandlerFactory =
+        { new IRpcHandlerFactory with
+              member this.Create t =
+                  match t with
+                      | tt when tt = typeof<UntypedStateManager> -> Some <| (UntypedStateManager.Instance :> _)
+                      | _ -> None }
+    do SetRpcHandlerFactory weatherwaxRpcHandlerFactory
+    let stateManager = Utilities.StateManager.Instance
+    interface IWebsite<WeatherwaxAction> with
+        member this.Actions = []
+        member this.Sitelet =
+            let appTemplate =
+                Content.Template<WebSharperTemplateBase>(settings.MainHtmlPath)
+                    .With ("body", fun template -> template.Body)
+            let angularTemplate =
+                Content.Template<AngularTemplateBase>(settings.TemplateHtmlPath)
+                    .With ("content", fun template -> template.Content)
             Sitelet.Infer <| function
                 | Index ->
                     let req = HttpContext.Current.Request
                     match req.QueryString.["_escaped_fragment_"] with
                         | null ->
-                            Content.WithTemplate appTemplate <| fun ctx ->
+                            Content.WithTemplate appTemplate <| fun context ->
                                 { Body = [ Div [ settings.ClientControl ] ] }
                         | fragment ->
                             let baseUrl = req.Url.GetLeftPart(UriPartial.Authority)
@@ -50,13 +49,24 @@ type AngularWebsite<'TTemplate,'TController,'TState when 'TTemplate : equality a
                                   WriteBody = fun stream ->
                                       use streamWriter = new StreamWriter (stream)
                                       streamWriter.Write snapshot }
-                | Template templateId ->
-                    let templateInfo = settings.TemplateImplementation templateId
+                | Template (templateId, args) ->
+                    let stateInfo =
+                        match stateManager.FindState templateId with
+                            | None -> failwith "Template not found"
+                            | Some s ->
+                                match args.Length with
+                                    | l when l = s.UrlParametersToPassToTemplate.Length -> s
+                                    | _ -> failwith "Incorrect number of arguments"
+                    let templateInfo = stateInfo.Template
+                    let templateArgs =
+                        args
+                        |> List.mapi (fun n a -> (stateInfo.UrlParametersToPassToTemplate.[n], a))
+                        |> dict
                     match templateInfo with
                         | Inline templateContent ->
-                            Content.WithTemplate angularTemplate <| fun ctx ->
-                                let headers = ctx.Request.Headers
-                                { Content = templateContent }
+                            Content.WithTemplate angularTemplate <| fun context ->
+                                let helper = WebsiteHelper<'TState> (stateManager.AvailableStates, context)
+                                { Content = templateContent (templateArgs, context, helper) }
                         | Static staticType ->
                             CustomContent <| fun context ->
                                 { Status = Http.Status.Ok  
@@ -77,18 +87,16 @@ type AngularWebsite<'TTemplate,'TController,'TState when 'TTemplate : equality a
                           WriteBody = fun stream ->
                               use streamWriter = new StreamWriter (stream)
                               let message =
-                                match errorType with
-                                    | Unspecified -> "Unspecified error"
+                                  match errorType with
+                                      | Unspecified -> "Unspecified error"
                               let fullMessage = sprintf "Weatherwax Error: %s" message
                               streamWriter.Write fullMessage }
-//                | Sitemap ->
-//                    CustomContent <| fun context ->
-//                        { Status = Http.Status.Ok
-//                          Headers = [ Http.Header.Custom "Content-Type" "text/xml" ]
-//                          WriteBody = fun stream ->
-//                              let xmlDoc = new XmlDocument ()
-//                              let xmlRootNode = xmlDoc.CreateElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9")
-//                              xmlDoc.AppendChild (xmlRootNode) |> ignore
-//                              xmlDoc.Save (stream) }
-
-        member this.Actions = []
+    //                | Sitemap ->
+    //                    CustomContent <| fun context ->
+    //                        { Status = Http.Status.Ok
+    //                          Headers = [ Http.Header.Custom "Content-Type" "text/xml" ]
+    //                          WriteBody = fun stream ->
+    //                              let xmlDoc = new XmlDocument ()
+    //                              let xmlRootNode = xmlDoc.CreateElement("urlset", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    //                              xmlDoc.AppendChild (xmlRootNode) |> ignore
+    //                              xmlDoc.Save (stream) }

@@ -114,12 +114,17 @@
     <Compile Include="Configuration.fs" />
     <Compile Include="Remoting.fs" />
     <Compile Include="AngularScopes.fs" />
-    <Compile Include="AngularStates.fs" />
-    <Compile Include="AngularTemplates.fs" />
     <Compile Include="AngularConfiguration.fs" />
-    <Compile Include="AngularControllers.fs" />
-    <Compile Include="AngularRouter.fs" />
-    <Compile Include="AngularModules.fs" />
+    <Compile Include="AngularControllers\BaseController.fs" />
+    <Compile Include="AngularControllers\HomeController.fs" />
+    <Compile Include="AngularControllers\AboutController.fs" />
+    <Compile Include="AngularControllers\MusicController.fs" />
+    <Compile Include="AngularControllers\ErrorController.fs" />
+    <Compile Include="AngularStates\master.fs" />
+    <Compile Include="AngularStates\master.home.fs" />
+    <Compile Include="AngularStates\master.about.fs" />
+    <Compile Include="AngularStates\master.music.fs" />
+    <Compile Include="AngularStates\master.error.fs" />
     <Compile Include="Main.fs" />
     <Content Include="Main.html" />
     <Content Include="Template.html" />
@@ -133,7 +138,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="ellipsoid.org.SharpAngles">
-      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.2-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
+      <HintPath>..\packages\ellipsoid.org.SharpAngles.0.2.3-alpha\lib\ellipsoid.org.SharpAngles.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ellipsoid.org.SharpAngles.UI">

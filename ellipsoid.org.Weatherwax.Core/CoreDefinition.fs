@@ -1,94 +1,114 @@
 ﻿namespace ellipsoid.org.Weatherwax.Core
 
-open IntelliFactory.WebSharper.Html.Server
 open IntelliFactory.WebSharper
+open IntelliFactory.WebSharper.Html.Server
+open IntelliFactory.WebSharper.Sitelets
+open System
 open System.Collections.Generic
 
-[<JavaScript>]
-type InheritableProperty<'T> =
-    { mutable value: 'T }
-        
-[<JavaScript>]
-type ControllerInfo<'T when 'T : equality> =
-    { Controller: 'T
-      Name: string
-      Implementation: obj }
+type WeatherwaxError =
+    | Unspecified
 
-[<JavaScript>]
-type ControllerConfiguration<'T when 'T : equality> () =
-    let mutable _controllers: ControllerInfo<'T> list = []
-    member this.Controllers with get() = _controllers
-    member this.DefineController (controller, name, implementation) =
-        // Check if controller has already been defined
-        match List.tryFind (fun c -> c.Controller = controller) _controllers with
-            | Some c -> failwith "Controller has already been defined"
-            | None -> _controllers <- List.append [ { Controller = controller; Name = name; Implementation = implementation } ] _controllers
-        this
-    member this.ControllerName controller =
-        match List.tryFind (fun c -> c.Controller = controller) _controllers with
-            | Some c -> c.Name
-            | None -> failwith "Controller not defined in ControllerConfiguration"
+type WeatherwaxAction =
+    | [<CompiledName "">]            Index
+    |                                Template of string * string list
+    |                                Error of WeatherwaxError
+    // | [<CompiledName "sitemap.xml">] Sitemap
 
-[<JavaScript>]
-type StateTemplateReference<'TTemplate when 'TTemplate : equality> =
-    | Direct of 'TTemplate
-    | Parameterised of (obj -> string)
-
-type State<'TTemplate,'TController when 'TTemplate : equality and 'TController : equality> =
-    { Url: string option
-      Template: StateTemplateReference<'TTemplate>
-      Controller: 'TController option
-      CustomData: obj option }
-
-[<JavaScript>]
-type StateInfo<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> =
-    { State: 'TState
-      Name: string
-      Implementation: State<'TTemplate,'TController>}
-
-[<JavaScript>]
-type StateConfiguration<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> (nameMapper: 'TState -> string) =
-    let mutable _states: StateInfo<'TTemplate,'TController,'TState> list = []
-    let mutable _whens: (string * string) list = []
-    let mutable _otherwise: string option = None
-
-    member this.States with get() = _states
-    member this.Whens with get() = _whens
-    member this.DefineState (state: 'TState, implementation: State<'TTemplate,'TController>) =
-        let name = nameMapper state
-
-        // Check if state has already been defined
-        match List.tryFind (fun s -> s.Name = name) _states with
-            | Some s -> failwith "State has already been defined"
-            | None -> _states <- List.append [ { State = state; Name = name; Implementation = implementation } ] _states
-        this
-//    member this.StateName state =
-//        match List.tryFind (fun s -> s.State = state) _states with
-//            | Some s -> nameMapper state
-//            | None -> failwith "State not defined in StateConfiguration"
-    member this.When (whenPath: string, toPath: string) =
-        _whens <- List.append [ (whenPath, toPath) ] _whens
-        this
-    member this.Otherwise () = _otherwise
-    member this.Otherwise (path: string) = 
-        _otherwise <- Some path
-        this
+type ISettings =
+    abstract member ClientControl: IntelliFactory.WebSharper.Web.Control
+    abstract member FileTemplateRootPath: string
+    abstract member GenerateSnapshot: baseUrl: string -> fragment: string -> string
+    abstract member MainHtmlPath: string
+    abstract member TemplateHtmlPath: string
 
 type TemplateFile =
     | Html of string
     // | Markdown of string
 
-type Template =
-    | Inline of Element list
+[<AbstractClass; JavaScript>]
+type WeatherwaxController () =
+    abstract member Name: string
+    abstract member Implementation: obj
+    member this.FromSourceFilename (f: string) =
+        let startIndex = Math.Max (f.LastIndexOf '\\', f.LastIndexOf '/')               // startIndex = -1 means no path, only the filename
+        f.Substring (startIndex + 1, f.Length - (Math.Max (startIndex, 0)) - 3)         // Remove the .fs extension
+
+type WebsiteHelper<'TState when 'TState : equality> (availableStates: WeatherwaxState<'TState> array, context) =
+    member private this.SRefValue (value: string) = Html.NewAttribute "ui-sref" value
+    member this.SRef (state: 'TState, [<ParamArray>] parameters: (string * string) array) =
+        let paramSuffix =
+            match parameters.Length with
+                | 0 -> ""
+                | _ ->
+                    let suffixValue = 
+                        parameters
+                        |> Array.map (fun (name, value) ->
+                            sprintf "%s: '%s'" name value
+                        )
+                        |> Array.fold (fun currentVal s -> match currentVal with | "" -> s | _ -> sprintf "%s, %s" currentVal s) ""
+                    sprintf "({ %s })" suffixValue
+        match Array.tryFind (fun (s: WeatherwaxState<'TState>) -> s.State = state) availableStates with
+            | None -> this.SRefValue "(error: undefined state)"
+            | Some s -> sprintf "%s%s" s.Name paramSuffix |> this.SRefValue
+
+and Template<'TState when 'TState : equality> =
+    | Inline of (IDictionary<string,string> * Context<WeatherwaxAction> * WebsiteHelper<'TState> -> Element list)
     | Static of TemplateFile
 
-type ISettings<'TTemplate,'TController,'TState when 'TTemplate : equality and 'TController : equality and 'TState : equality> =
-    abstract member ClientControl: Web.Control
-    abstract member ControllerConfiguration: ControllerConfiguration<'TController>
-    abstract member FileTemplateRootPath: string
-    abstract member GenerateSnapshot: baseUrl: string -> fragment: string -> string
-    abstract member MainHtmlPath: string
-    abstract member StateConfiguration: StateConfiguration<'TTemplate,'TController,'TState>
-    abstract member TemplateHtmlPath: string
-    abstract member TemplateRelativePath: 'TTemplate -> string
-    abstract member TemplateImplementation: 'TTemplate -> Template
+and [<AbstractClass>] WeatherwaxBaseState () =
+    abstract member Name: string
+    abstract member Url: string option
+    abstract member UrlParametersToPassToTemplate: string list
+    abstract member Controller: WeatherwaxController option
+    abstract member CustomData: obj option
+
+    default this.Url = None
+    default this.UrlParametersToPassToTemplate = []
+    default this.Controller = None
+    default this.CustomData = None
+
+    member this.FromSourceFilename f = 
+        let filename = System.IO.FileInfo(f).Name
+        filename.Substring (0, filename.Length - 3)     // Remove the .fs extension
+
+and [<AbstractClass>] WeatherwaxState<'TState when 'TState : equality> () =
+    inherit WeatherwaxBaseState ()
+    abstract member State: 'TState
+    abstract member Template: Template<'TState>
+
+type StateDefinition =
+    { Name: string
+      Url: string option
+      UrlParametersToPassToTemplate: string list
+      ControllerName: string option
+      CustomData: obj option }
+
+type StateWhen =
+    { UrlIn: string
+      UrlOut: string }
+
+[<AbstractClass>]
+type Parameter<'T> (name: string) =
+    member this.Name with get () = name
+    abstract member ReadValue: IDictionary<string,string> -> 'T
+
+type StringParameter (name: string) =
+    inherit Parameter<string> (name)
+    override this.ReadValue urlParams = urlParams.[name]
+
+type IntParameter (name: string) =
+    inherit Parameter<int> (name)
+    override this.ReadValue urlParams =
+        let (success, result) = Int32.TryParse (urlParams.[name])
+        if success then result else failwith "Parameter cannot be converted into an integer"
+
+type FloatParameter (name: string) =
+    inherit Parameter<float> (name)
+    override this.ReadValue urlParams =
+        let (success, result) = Double.TryParse (urlParams.[name])
+        if success then result else failwith "Parameter cannot be converted into a float"
+
+[<JavaScript>]
+type InheritableProperty<'T> =
+    { mutable value: 'T }
