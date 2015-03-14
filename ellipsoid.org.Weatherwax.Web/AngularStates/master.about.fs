@@ -6,13 +6,14 @@ open ellipsoid.org.Weatherwax.Web
 open ellipsoid.org.Weatherwax.Web.Controllers
 open IntelliFactory.WebSharper.Html.Server
 open System
+open ellipsoid.org.Weatherwax.Core.Utilities
 
 type Master_AboutState () =
     inherit WeatherwaxState<AngularState> ()
     override this.State = Master_About
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/about"
-    override this.Controller = Some <| (AboutController () :> _)
+    override this.ControllerType = Some typeof<AboutController>
     override this.Template =
         Inline <|
             fun (urlParams, context, helper) -> 

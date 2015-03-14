@@ -23,17 +23,29 @@ module Utilities =
                 | _ -> [||]
 
     [<AbstractClass>]
-    type CommonStateManager<'T> () =
-        let _availableStates =
+    type CommonObjectManager<'T> () =
+        let _availableObjects =
             AppDomain.CurrentDomain.GetAssemblies ()
             |> Array.map (fun a -> a.GetLoadableTypes ())
             |> Array.concat
             |> Array.filter (fun t -> t.IsClass && not t.IsAbstract && t.IsSubclassOf (typeof<'T>))
             |> Array.map (fun t -> Activator.CreateInstance (t) :?> 'T)
-        member this.AvailableStates with get () = _availableStates
+        member this.AvailableObjects with get () = _availableObjects
+
+    type ControllerManager private () =
+        inherit CommonObjectManager<WeatherwaxController> ()
+        static let _instance = ControllerManager ()
+        static member Instance with get () = _instance
+        member this.ControllerName controllerType =
+            let controller = 
+                this.AvailableObjects
+                |> Array.tryFind (fun c -> c.GetType () = controllerType)
+            match controller with
+                | None -> failwith "Unknown controller"
+                | Some c -> c.Name
 
     type UntypedStateManager private () =
-        inherit CommonStateManager<WeatherwaxBaseState> ()
+        inherit CommonObjectManager<WeatherwaxBaseState> ()
         static let _instance = UntypedStateManager ()
         static member Instance with get () = _instance
 
@@ -41,22 +53,26 @@ module Utilities =
         member this.StateDefinition () =
             async {
                 return 
-                    this.AvailableStates
+                    this.AvailableObjects
                     |> Array.map (fun s ->
                         { Name = s.Name
                           Url = s.Url
                           UrlParametersToPassToTemplate = s.UrlParametersToPassToTemplate
-                          ControllerName = match s.Controller with | Some c -> Some c.Name | None -> None
+                          ControllerName = 
+                              match s.ControllerType with 
+                                  | None -> None
+                                  | Some t ->
+                                      Some (Activator.CreateInstance(t) :?> WeatherwaxController).Name
                           CustomData = s.CustomData }
                     )
             }
 
     type StateManager<'TState when 'TState : equality> private () =
-        inherit CommonStateManager<WeatherwaxState<'TState>> ()
+        inherit CommonObjectManager<WeatherwaxState<'TState>> ()
         static let _instance = StateManager<'TState> ()
         static member Instance with get () = _instance
         member this.FindState state =
-            this.AvailableStates
+            this.AvailableObjects
             |> Array.tryFind (fun s -> s.Name = state)
 
     type Module with
@@ -154,6 +170,8 @@ module Utilities =
                         state.Go (newState) |> ignore
                 )                                      
             ) |> ignore                        
+
+    let ControllerName<'T when 'T :> WeatherwaxController> = ControllerManager.Instance.ControllerName typeof<'T>
 
     let private hasNestedProperty = 
         function

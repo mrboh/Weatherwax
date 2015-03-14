@@ -13,7 +13,7 @@ type Master_MusicState () =
     override this.State = Master_Music
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/music"
-    override this.Controller = Some <| (MusicController () :> _)
+    override this.ControllerType = Some typeof<MusicController>
     override this.Template =
         Inline <|
             fun (urlParams, context, helper) -> 

@@ -15,7 +15,7 @@ type Master_ErrorState () =
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some <| sprintf "^/error/{%s}" idParameter.Name
     override this.UrlParametersToPassToTemplate = [ idParameter.Name ]
-    override this.Controller = Some <| (ErrorController () :> _)
+    override this.ControllerType = Some typeof<ErrorController>
     override this.Template =
         Inline <|
             fun (urlParams, context, helper) -> 

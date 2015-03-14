@@ -65,7 +65,7 @@ type WeatherwaxWebsite<'TState when 'TState : equality> (settings: ISettings) =
                     match templateInfo with
                         | Inline templateContent ->
                             Content.WithTemplate angularTemplate <| fun context ->
-                                let helper = WebsiteHelper<'TState> (stateManager.AvailableStates, context)
+                                let helper = WebsiteHelper<'TState> (stateManager.AvailableObjects, context)
                                 { Content = templateContent (templateArgs, context, helper) }
                         | Static staticType ->
                             CustomContent <| fun context ->

@@ -60,12 +60,12 @@ and [<AbstractClass>] WeatherwaxBaseState () =
     abstract member Name: string
     abstract member Url: string option
     abstract member UrlParametersToPassToTemplate: string list
-    abstract member Controller: WeatherwaxController option
+    abstract member ControllerType: Type option
     abstract member CustomData: obj option
 
     default this.Url = None
     default this.UrlParametersToPassToTemplate = []
-    default this.Controller = None
+    default this.ControllerType = None
     default this.CustomData = None
 
     member this.FromSourceFilename f = 
