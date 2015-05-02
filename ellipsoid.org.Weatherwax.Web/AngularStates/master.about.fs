@@ -9,7 +9,7 @@ open System
 open ellipsoid.org.Weatherwax.Core.Utilities
 
 type Master_AboutState () =
-    inherit WeatherwaxState<AngularState> ()
+    inherit WeatherwaxState<AngularState,AngularController> ()
     override this.State = Master_About
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/about"

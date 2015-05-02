@@ -27,14 +27,21 @@ type TemplateFile =
     // | Markdown of string
 
 [<AbstractClass; JavaScript>]
-type WeatherwaxController () =
+type WeatherwaxBaseController () =
     abstract member Name: string
     abstract member Implementation: obj
     member this.FromSourceFilename (f: string) =
         let startIndex = Math.Max (f.LastIndexOf '\\', f.LastIndexOf '/')               // startIndex = -1 means no path, only the filename
         f.Substring (startIndex + 1, f.Length - (Math.Max (startIndex, 0)) - 3)         // Remove the .fs extension
 
-type WebsiteHelper<'TState when 'TState : equality> (availableStates: WeatherwaxState<'TState> array, context) =
+[<AbstractClass; JavaScript>]
+type WeatherwaxController<'T when 'T : equality> () =
+    inherit WeatherwaxBaseController ()
+    abstract member Controller: 'T
+
+type WebsiteHelper<'TState,'TController when 'TState : equality and 'TController : equality> 
+    (availableStates: WeatherwaxState<'TState,'TController> array, availableControllers: WeatherwaxController<'TController> array, context) =
+    
     member private this.SRefValue (value: string) = Html.NewAttribute "ui-sref" value
     member this.SRef (state: 'TState, [<ParamArray>] parameters: (string * string) array) =
         let paramSuffix =
@@ -48,12 +55,16 @@ type WebsiteHelper<'TState when 'TState : equality> (availableStates: Weatherwax
                         )
                         |> Array.fold (fun currentVal s -> match currentVal with | "" -> s | _ -> sprintf "%s, %s" currentVal s) ""
                     sprintf "({ %s })" suffixValue
-        match Array.tryFind (fun (s: WeatherwaxState<'TState>) -> s.State = state) availableStates with
+        match Array.tryFind (fun (s: WeatherwaxState<'TState,'TController>) -> s.State = state) availableStates with
             | None -> this.SRefValue "(error: undefined state)"
             | Some s -> sprintf "%s%s" s.Name paramSuffix |> this.SRefValue
+    member this.ControllerName (controller: 'TController) =
+        match Array.tryFind (fun (c: WeatherwaxController<'TController>) -> c.Controller = controller) availableControllers with
+            | None -> "Error: undefined controller"
+            | Some c -> c.Name
 
-and Template<'TState when 'TState : equality> =
-    | Inline of (IDictionary<string,string> * Context<WeatherwaxAction> * WebsiteHelper<'TState> -> Element list)
+and Template<'TState,'TController when 'TState : equality and 'TController : equality> =
+    | Inline of (IDictionary<string,string> * Context<WeatherwaxAction> * WebsiteHelper<'TState,'TController> -> Element list)
     | Static of TemplateFile
 
 and [<AbstractClass>] WeatherwaxBaseState () =
@@ -72,10 +83,14 @@ and [<AbstractClass>] WeatherwaxBaseState () =
         let filename = System.IO.FileInfo(f).Name
         filename.Substring (0, filename.Length - 3)     // Remove the .fs extension
 
-and [<AbstractClass>] WeatherwaxState<'TState when 'TState : equality> () =
+and [<AbstractClass>] WeatherwaxState<'TState,'TController when 'TState : equality and 'TController : equality> () =
     inherit WeatherwaxBaseState ()
     abstract member State: 'TState
-    abstract member Template: Template<'TState>
+    abstract member Template: Template<'TState,'TController>
+
+type ControllerDefinition =
+    { Name: string
+      Controller: obj }
 
 type StateDefinition =
     { Name: string

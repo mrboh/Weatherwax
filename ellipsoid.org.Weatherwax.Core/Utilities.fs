@@ -32,17 +32,52 @@ module Utilities =
             |> Array.map (fun t -> Activator.CreateInstance (t) :?> 'T)
         member this.AvailableObjects with get () = _availableObjects
 
-    type ControllerManager private () =
-        inherit CommonObjectManager<WeatherwaxController> ()
-        static let _instance = ControllerManager ()
+    type UntypedControllerManager private () =
+        inherit CommonObjectManager<WeatherwaxBaseController> ()
+//        let _availableObjects =
+//            AppDomain.CurrentDomain.GetAssemblies ()
+//            |> Array.map (fun a -> a.GetLoadableTypes ())
+//            |> Array.concat
+//            |> Array.filter (fun t -> t.IsClass && not t.IsAbstract && t.IsGenericType && t.Name = (typedefof<WeatherwaxTypedController<_>>.Name))
+//            |> Array.map (fun t -> Activator.CreateInstance (t))
+        static let _instance = UntypedControllerManager ()
         static member Instance with get () = _instance
-        member this.ControllerName controllerType =
-            let controller = 
-                this.AvailableObjects
-                |> Array.tryFind (fun c -> c.GetType () = controllerType)
-            match controller with
-                | None -> failwith "Unknown controller"
-                | Some c -> c.Name
+
+        // member this.AvailableObjects with get () = _availableObjects
+//        member this.ControllerName ctrl =
+//            let controller = 
+//                this.AvailableObjects
+//                |> Array.tryFind (fun c -> (c :?> WeatherwaxTypedController<_>).Controller = ctrl)
+//            match controller with
+//                | None -> failwith "Unknown controller"
+//                | Some c -> (c :?> WeatherwaxTypedController<_>).Name
+//        member this.ControllerName controllerType =
+//            let controller = 
+//                this.AvailableObjects
+//                |> Array.tryFind (fun c -> c.GetType () = controllerType)
+//            match controller with
+//                | None -> failwith "Unknown controller"
+//                | Some c -> c.Name
+
+//        [<Rpc>]
+//        member this.ControllerDefinition () =
+//            async {
+//                return
+//                    this.AvailableObjects
+//                    |> Array.map (fun c ->
+//                        let ctrl = c :?> WeatherwaxTypedController<_>
+//                        { Name = ctrl.Name
+//                          Controller = ctrl.Controller :> obj }
+//                    )
+//            }
+
+    type ControllerManager<'TController when 'TController : equality> private () =
+        inherit CommonObjectManager<WeatherwaxController<'TController>> ()
+        static let _instance = ControllerManager<'TController> ()
+        static member Instance with get () = _instance
+        member this.FindController controller =
+            this.AvailableObjects
+            |> Array.tryFind (fun c -> c.Name = controller)
 
     type UntypedStateManager private () =
         inherit CommonObjectManager<WeatherwaxBaseState> ()
@@ -62,14 +97,14 @@ module Utilities =
                               match s.ControllerType with 
                                   | None -> None
                                   | Some t ->
-                                      Some (Activator.CreateInstance(t) :?> WeatherwaxController).Name
+                                      Some (Activator.CreateInstance(t) :?> WeatherwaxBaseController).Name
                           CustomData = s.CustomData }
                     )
             }
 
-    type StateManager<'TState when 'TState : equality> private () =
-        inherit CommonObjectManager<WeatherwaxState<'TState>> ()
-        static let _instance = StateManager<'TState> ()
+    type StateManager<'TState,'TController when 'TState : equality and 'TController : equality> private () =
+        inherit CommonObjectManager<WeatherwaxState<'TState,'TController>> ()
+        static let _instance = StateManager<'TState,'TController> ()
         static member Instance with get () = _instance
         member this.FindState state =
             this.AvailableObjects
@@ -77,12 +112,12 @@ module Utilities =
 
     type Module with
         [<JavaScript>]
-        member this.Controller (controller: WeatherwaxController) =
+        member this.Controller<'T when 'T : equality> (controller: WeatherwaxController<'T>) =
             this.Controller(controller.Name, controller.Implementation) |> ignore
             this
 
         [<JavaScript>]
-        member this.Controllers (controllers: WeatherwaxController list) =
+        member this.Controllers<'T when 'T : equality> (controllers: WeatherwaxController<'T> list) =
             for c in controllers do this.Controller(c) |> ignore
             this
 
@@ -118,6 +153,10 @@ module Utilities =
                             | None -> ()
                 )
             this.Config (routeConfiguration)
+
+        [<JavaScript>]
+        member this.ControllerName<'TController when 'TController : equality> (controller: 'TController) =
+            ""
 
 //        [<JavaScript>]
 //        member this.Controllers (config: ControllerConfiguration<'T>) =
@@ -171,7 +210,7 @@ module Utilities =
                 )                                      
             ) |> ignore                        
 
-    let ControllerName<'T when 'T :> WeatherwaxController> = ControllerManager.Instance.ControllerName typeof<'T>
+    // let ControllerName<'T when 'T :> WeatherwaxController> = ControllerManager.Instance.ControllerName typeof<'T>
 
     let private hasNestedProperty = 
         function

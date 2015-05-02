@@ -33,6 +33,16 @@ type AngularExpression3<'T1,'T2,'T3> (d1: Dependency<'T1>, d2: Dependency<'T2>, 
     interface IAngularExpression
 
 [<JavaScript>]
+type AngularExpression4<'T1,'T2,'T3,'T4> (d1: Dependency<'T1>, d2: Dependency<'T2>, d3: Dependency<'T3>, d4: Dependency<'T4>) =
+    member this.Resolve (lambda: 'T1 * 'T2 * 'T3 * 'T4 -> _) = (d1.JavascriptName, d2.JavascriptName, d3.JavascriptName, d4.JavascriptName, lambda) :> obj
+    interface IAngularExpression
+
+[<JavaScript>]
+type AngularExpression5<'T1,'T2,'T3,'T4,'T5> (d1: Dependency<'T1>, d2: Dependency<'T2>, d3: Dependency<'T3>, d4: Dependency<'T4>, d5: Dependency<'T5>) =
+    member this.Resolve (lambda: 'T1 * 'T2 * 'T3 * 'T4 * 'T5 -> _) = (d1.JavascriptName, d2.JavascriptName, d3.JavascriptName, d4.JavascriptName, d5.JavascriptName, lambda) :> obj
+    interface IAngularExpression
+
+[<JavaScript>]
 module Dependencies =
 
     let Router = "ngRoute"

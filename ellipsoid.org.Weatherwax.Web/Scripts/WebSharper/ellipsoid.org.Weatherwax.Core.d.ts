@@ -41,13 +41,16 @@ declare module ellipsoid {
                     interface UntypedStateManager {
                     }
                     var Module_Controller : {
-                        (_this: __ABBREV.__SharpAngles.Module, controller: __ABBREV.__Core.WeatherwaxController): __ABBREV.__SharpAngles.Module;
+                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controller: __ABBREV.__Core.WeatherwaxController<_M1>): __ABBREV.__SharpAngles.Module;
                     };
                     var Module_Controllers : {
-                        (_this: __ABBREV.__SharpAngles.Module, controllers: __ABBREV.__List.T<__ABBREV.__Core.WeatherwaxController>): __ABBREV.__SharpAngles.Module;
+                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controllers: __ABBREV.__List.T<__ABBREV.__Core.WeatherwaxController<_M1>>): __ABBREV.__SharpAngles.Module;
                     };
                     var Module_States : {
                         (_this: __ABBREV.__SharpAngles.Module, stateDefinitions: any[], otherwise: __ABBREV.__WebSharper.OptionProxy<string>, redirects: __ABBREV.__WebSharper.OptionProxy<any[]>): __ABBREV.__SharpAngles.Module;
+                    };
+                    var Module_ControllerName : {
+                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controller: _M1): string;
                     };
                     var InjectorService_TransitionToState : {
                         (_this: __ABBREV.__Auto.InjectorService, newState: string): void;
@@ -130,6 +133,12 @@ declare module ellipsoid {
                 interface AngularExpression3<_T1, _T2, _T3> {
                     Resolve<_M1>(lambda: __ABBREV.__WebSharper.F3<_T1, _T2, _T3, _M1>): __ABBREV.__WebSharper.ObjectProxy;
                 }
+                interface AngularExpression4<_T1, _T2, _T3, _T4> {
+                    Resolve<_M1>(lambda: __ABBREV.__WebSharper.F4<_T1, _T2, _T3, _T4, _M1>): __ABBREV.__WebSharper.ObjectProxy;
+                }
+                interface AngularExpression5<_T1, _T2, _T3, _T4, _T5> {
+                    Resolve<_M1>(lambda: __ABBREV.__WebSharper.F5<_T1, _T2, _T3, _T4, _T5, _M1>): __ABBREV.__WebSharper.ObjectProxy;
+                }
                 interface WeatherwaxError {
                 }
                 interface WeatherwaxAction {
@@ -143,14 +152,20 @@ declare module ellipsoid {
                 }
                 interface TemplateFile {
                 }
-                interface WeatherwaxController {
+                interface WeatherwaxBaseController {
                     FromSourceFilename(f: string): string;
                 }
-                interface Template<_T1> {
+                interface WeatherwaxController<_T1> {
+                }
+                interface Template<_T1, _T2> {
                 }
                 interface WeatherwaxBaseState {
                 }
-                interface WeatherwaxState<_T1> {
+                interface WeatherwaxState<_T1, _T2> {
+                }
+                interface ControllerDefinition {
+                    Name: string;
+                    Controller: __ABBREV.__WebSharper.ObjectProxy;
                 }
                 interface StateDefinition {
                     Name: string;
@@ -180,7 +195,7 @@ declare module ellipsoid {
                 interface AngularTemplateBase {
                     Content: __ABBREV.__List.T<any>;
                 }
-                interface WeatherwaxWebsite<_T1> {
+                interface WeatherwaxWebsite<_T1, _T2> {
                 }
             }
         }
@@ -202,6 +217,25 @@ declare module IntelliFactory {
                 1: _T2;
                 2: _T3;
             }): _T4;
+        }
+        interface F4<_T1, _T2, _T3, _T4, _T5> {
+            (a1: _T1, a2: _T2, a3: _T3, a4: _T4): _T5;
+            (tuple: {
+                0: _T1;
+                1: _T2;
+                2: _T3;
+                3: _T4;
+            }): _T5;
+        }
+        interface F5<_T1, _T2, _T3, _T4, _T5, _T6> {
+            (a1: _T1, a2: _T2, a3: _T3, a4: _T4, a5: _T5): _T6;
+            (tuple: {
+                0: _T1;
+                1: _T2;
+                2: _T3;
+                3: _T4;
+                4: _T5;
+            }): _T6;
         }
     }
 }

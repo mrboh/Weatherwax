@@ -8,7 +8,7 @@ open IntelliFactory.WebSharper.Html.Server
 open System
 
 type Master_ErrorState () =
-    inherit WeatherwaxState<AngularState> ()
+    inherit WeatherwaxState<AngularState,AngularController> ()
     let idParameter = IntParameter "id"
 
     override this.State = Master_Error

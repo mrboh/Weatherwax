@@ -9,7 +9,7 @@ open IntelliFactory.WebSharper.Html.Server
 open System
 
 type Master_MusicState () =
-    inherit WeatherwaxState<AngularState> ()
+    inherit WeatherwaxState<AngularState,AngularController> ()
     override this.State = Master_Music
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/music"

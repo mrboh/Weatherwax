@@ -3,14 +3,16 @@
 open ellipsoid.org.SharpAngles.UI
 open ellipsoid.org.Weatherwax.Core
 open ellipsoid.org.Weatherwax.Core.Dependencies
+open ellipsoid.org.Weatherwax.Web
 open IntelliFactory.WebSharper
 open IntelliFactory.WebSharper.Html.Client
 open IntelliFactory.WebSharper.JQuery
 
 [<JavaScript>]
 type BaseController () =
-    inherit WeatherwaxController ()
+    inherit WeatherwaxController<AngularController> ()
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
+    override this.Controller = AngularController.Base
     override this.Implementation =
         AngularExpression2<_,_>(Services.Scope, Services.RootScope).Resolve(
             fun (scope, rootScope) ->

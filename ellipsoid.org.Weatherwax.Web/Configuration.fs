@@ -25,6 +25,13 @@ open System.Web.Configuration
     - ellipsoid.org.Weatherwax.Core
 *)
 
+type AngularController =
+    | Base
+    | Home
+    | About
+    | Music
+    | Error
+
 type AngularState =
     | Master
     | Master_Home
