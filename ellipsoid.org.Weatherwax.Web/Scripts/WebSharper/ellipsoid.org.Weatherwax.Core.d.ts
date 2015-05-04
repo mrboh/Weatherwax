@@ -41,16 +41,13 @@ declare module ellipsoid {
                     interface UntypedStateManager {
                     }
                     var Module_Controller : {
-                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controller: __ABBREV.__Core.WeatherwaxController<_M1>): __ABBREV.__SharpAngles.Module;
+                        (_this: __ABBREV.__SharpAngles.Module, controller: __ABBREV.__Core.WeatherwaxController): __ABBREV.__SharpAngles.Module;
                     };
                     var Module_Controllers : {
-                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controllers: __ABBREV.__List.T<__ABBREV.__Core.WeatherwaxController<_M1>>): __ABBREV.__SharpAngles.Module;
+                        (_this: __ABBREV.__SharpAngles.Module, controllers: __ABBREV.__List.T<__ABBREV.__Core.WeatherwaxController>): __ABBREV.__SharpAngles.Module;
                     };
                     var Module_States : {
                         (_this: __ABBREV.__SharpAngles.Module, stateDefinitions: any[], otherwise: __ABBREV.__WebSharper.OptionProxy<string>, redirects: __ABBREV.__WebSharper.OptionProxy<any[]>): __ABBREV.__SharpAngles.Module;
-                    };
-                    var Module_ControllerName : {
-                        <_M1>(_this: __ABBREV.__SharpAngles.Module, controller: _M1): string;
                     };
                     var InjectorService_TransitionToState : {
                         (_this: __ABBREV.__Auto.InjectorService, newState: string): void;
@@ -152,16 +149,14 @@ declare module ellipsoid {
                 }
                 interface TemplateFile {
                 }
-                interface WeatherwaxBaseController {
+                interface WeatherwaxController {
                     FromSourceFilename(f: string): string;
                 }
-                interface WeatherwaxController<_T1> {
-                }
-                interface Template<_T1, _T2> {
+                interface Template<_T1> {
                 }
                 interface WeatherwaxBaseState {
                 }
-                interface WeatherwaxState<_T1, _T2> {
+                interface WeatherwaxState<_T1> {
                 }
                 interface ControllerDefinition {
                     Name: string;
@@ -195,7 +190,7 @@ declare module ellipsoid {
                 interface AngularTemplateBase {
                     Content: __ABBREV.__List.T<any>;
                 }
-                interface WeatherwaxWebsite<_T1, _T2> {
+                interface WeatherwaxWebsite<_T1> {
                 }
             }
         }

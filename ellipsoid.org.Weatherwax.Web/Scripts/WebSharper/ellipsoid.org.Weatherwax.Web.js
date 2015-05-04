@@ -76,12 +76,6 @@
       },
       Controllers:{
        AboutController:Runtime.Class({
-        get_Controller:function()
-        {
-         return{
-          $:2
-         };
-        },
         get_Implementation:function()
         {
          return AngularExpression1.New(Services.Scope()).Resolve(function()
@@ -146,12 +140,6 @@
         }
        }),
        BaseController:Runtime.Class({
-        get_Controller:function()
-        {
-         return{
-          $:0
-         };
-        },
         get_Implementation:function()
         {
          return AngularExpression2.New(Services.Scope(),Services.RootScope()).Resolve(Runtime.Tupled(function(tupledArg)
@@ -199,12 +187,6 @@
         }
        }),
        ErrorController:Runtime.Class({
-        get_Controller:function()
-        {
-         return{
-          $:4
-         };
-        },
         get_Implementation:function()
         {
          return AngularExpression1.New(Services.Scope()).Resolve(function()
@@ -223,12 +205,6 @@
         }
        }),
        HomeController:Runtime.Class({
-        get_Controller:function()
-        {
-         return{
-          $:1
-         };
-        },
         get_Implementation:function()
         {
          return AngularExpression1.New(Services.Scope()).Resolve(function()
@@ -247,12 +223,6 @@
         }
        }),
        MusicController:Runtime.Class({
-        get_Controller:function()
-        {
-         return{
-          $:3
-         };
-        },
         get_Implementation:function()
         {
          return AngularExpression1.New(Services.CustomScope()).Resolve(function(scope)

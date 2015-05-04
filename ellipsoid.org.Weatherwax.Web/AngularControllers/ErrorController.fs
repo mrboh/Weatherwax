@@ -10,9 +10,8 @@ open ellipsoid.org.Weatherwax.Web
 
 [<JavaScript>]
 type ErrorController () =
-    inherit WeatherwaxController<AngularController> ()
+    inherit WeatherwaxController ()
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
-    override this.Controller = AngularController.Error
     override this.Implementation =
         AngularExpression1<_>(Services.Scope).Resolve(
             fun scope ->

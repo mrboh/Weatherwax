@@ -15,7 +15,7 @@ type WebSharperTemplateBase =
 type AngularTemplateBase =
     { Content: Element list }
 
-type WeatherwaxWebsite<'TState,'TController when 'TState : equality and 'TController : equality> (settings: ISettings) =    
+type WeatherwaxWebsite<'TState when 'TState : equality> (settings: ISettings) =    
     let weatherwaxRpcHandlerFactory =
         { new IRpcHandlerFactory with
               member this.Create t =
@@ -25,7 +25,7 @@ type WeatherwaxWebsite<'TState,'TController when 'TState : equality and 'TContro
                       | _ -> None }
     do SetRpcHandlerFactory weatherwaxRpcHandlerFactory
     let stateManager = Utilities.StateManager.Instance
-    let controllerManager = Utilities.ControllerManager.Instance
+    let controllerManager = Utilities.UntypedControllerManager.Instance
     interface IWebsite<WeatherwaxAction> with
         member this.Actions = []
         member this.Sitelet =
@@ -67,7 +67,7 @@ type WeatherwaxWebsite<'TState,'TController when 'TState : equality and 'TContro
                     match templateInfo with
                         | Inline templateContent ->
                             Content.WithTemplate angularTemplate <| fun context ->
-                                let helper = WebsiteHelper<'TState,'TController> (stateManager.AvailableObjects, controllerManager.AvailableObjects, context)
+                                let helper = WebsiteHelper<'TState> (stateManager.AvailableObjects, context)
                                 { Content = templateContent (templateArgs, context, helper) }
                         | Static staticType ->
                             CustomContent <| fun context ->

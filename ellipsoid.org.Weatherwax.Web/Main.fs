@@ -50,7 +50,7 @@ type Settings () =
         member this.TemplateHtmlPath = "~/Template.html"
             
 type Website () =
-    inherit WeatherwaxWebsite<AngularState,AngularController> (Settings ())
+    inherit WeatherwaxWebsite<AngularState> (Settings ())
 
 type Global() =
     inherit HttpApplication ()

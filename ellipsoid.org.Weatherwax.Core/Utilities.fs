@@ -33,7 +33,7 @@ module Utilities =
         member this.AvailableObjects with get () = _availableObjects
 
     type UntypedControllerManager private () =
-        inherit CommonObjectManager<WeatherwaxBaseController> ()
+        inherit CommonObjectManager<WeatherwaxController> ()
 //        let _availableObjects =
 //            AppDomain.CurrentDomain.GetAssemblies ()
 //            |> Array.map (fun a -> a.GetLoadableTypes ())
@@ -71,13 +71,13 @@ module Utilities =
 //                    )
 //            }
 
-    type ControllerManager<'TController when 'TController : equality> private () =
-        inherit CommonObjectManager<WeatherwaxController<'TController>> ()
-        static let _instance = ControllerManager<'TController> ()
-        static member Instance with get () = _instance
-        member this.FindController controller =
-            this.AvailableObjects
-            |> Array.tryFind (fun c -> c.Name = controller)
+//    type ControllerManager<'TController when 'TController : equality> private () =
+//        inherit CommonObjectManager<WeatherwaxController<'TController>> ()
+//        static let _instance = ControllerManager<'TController> ()
+//        static member Instance with get () = _instance
+//        member this.FindController controller =
+//            this.AvailableObjects
+//            |> Array.tryFind (fun c -> c.Name = controller)
 
     type UntypedStateManager private () =
         inherit CommonObjectManager<WeatherwaxBaseState> ()
@@ -97,13 +97,13 @@ module Utilities =
                               match s.ControllerType with 
                                   | None -> None
                                   | Some t ->
-                                      Some (Activator.CreateInstance(t) :?> WeatherwaxBaseController).Name
+                                      Some (Activator.CreateInstance(t) :?> WeatherwaxController).Name
                           CustomData = s.CustomData }
                     )
             }
 
     type StateManager<'TState,'TController when 'TState : equality and 'TController : equality> private () =
-        inherit CommonObjectManager<WeatherwaxState<'TState,'TController>> ()
+        inherit CommonObjectManager<WeatherwaxState<'TState>> ()
         static let _instance = StateManager<'TState,'TController> ()
         static member Instance with get () = _instance
         member this.FindState state =
@@ -112,12 +112,12 @@ module Utilities =
 
     type Module with
         [<JavaScript>]
-        member this.Controller<'T when 'T : equality> (controller: WeatherwaxController<'T>) =
+        member this.Controller (controller: WeatherwaxController) =
             this.Controller(controller.Name, controller.Implementation) |> ignore
             this
 
         [<JavaScript>]
-        member this.Controllers<'T when 'T : equality> (controllers: WeatherwaxController<'T> list) =
+        member this.Controllers (controllers: WeatherwaxController list) =
             for c in controllers do this.Controller(c) |> ignore
             this
 
@@ -154,9 +154,9 @@ module Utilities =
                 )
             this.Config (routeConfiguration)
 
-        [<JavaScript>]
-        member this.ControllerName<'TController when 'TController : equality> (controller: 'TController) =
-            ""
+//        [<JavaScript>]
+//        member this.ControllerName<'TController when 'TController : equality> (controller: 'TController) =
+//            ""
 
 //        [<JavaScript>]
 //        member this.Controllers (config: ControllerConfiguration<'T>) =

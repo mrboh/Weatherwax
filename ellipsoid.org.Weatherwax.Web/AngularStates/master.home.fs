@@ -8,7 +8,7 @@ open IntelliFactory.WebSharper.Html.Server
 open System
 
 type Master_HomeState () =
-    inherit WeatherwaxState<AngularState,AngularController> ()
+    inherit WeatherwaxState<AngularState> ()
     override this.State = Master_Home
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/"

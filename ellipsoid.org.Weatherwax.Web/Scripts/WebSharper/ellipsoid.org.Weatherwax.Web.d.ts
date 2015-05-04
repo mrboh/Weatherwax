@@ -5,27 +5,22 @@ declare module ellipsoid {
                 module Controllers {
                     interface BaseController {
                         get_Name(): string;
-                        get_Controller(): __ABBREV.__Web.AngularController;
                         get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
                     interface HomeController {
                         get_Name(): string;
-                        get_Controller(): __ABBREV.__Web.AngularController;
                         get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
                     interface AboutController {
                         get_Name(): string;
-                        get_Controller(): __ABBREV.__Web.AngularController;
                         get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
                     interface MusicController {
                         get_Name(): string;
-                        get_Controller(): __ABBREV.__Web.AngularController;
                         get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
                     interface ErrorController {
                         get_Name(): string;
-                        get_Controller(): __ABBREV.__Web.AngularController;
                         get_Implementation(): __ABBREV.__WebSharper.ObjectProxy;
                     }
                 }
@@ -62,8 +57,6 @@ declare module ellipsoid {
                         (): string;
                     };
                 }
-                interface AngularController {
-                }
                 interface AngularState {
                 }
                 interface StateDefinitionService {
@@ -77,6 +70,5 @@ declare module ellipsoid {
 }
 declare module __ABBREV {
     
-    export import __Web = ellipsoid.org.Weatherwax.Web;
     export import __WebSharper = IntelliFactory.WebSharper;
 }

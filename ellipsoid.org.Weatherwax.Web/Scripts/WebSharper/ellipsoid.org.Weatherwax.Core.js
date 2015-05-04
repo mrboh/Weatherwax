@@ -1,6 +1,6 @@
 (function()
 {
- var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Html,Client,Default,ellipsoid,org,Weatherwax,Core,Dependency,AngularExpression1,Dependencies,Services,Enumerator,Utilities,AngularExpression2,Providers,Arrays,PrintfHelpers,String,Seq,Math,Strings,WeatherwaxController,WeatherwaxBaseController,Events;
+ var Global=this,Runtime=this.IntelliFactory.Runtime,WebSharper,Html,Client,Default,ellipsoid,org,Weatherwax,Core,Dependency,AngularExpression1,Dependencies,Services,Enumerator,Utilities,AngularExpression2,Providers,Arrays,PrintfHelpers,String,Seq,Math,Strings,Events;
  Runtime.Define(Global,{
   ellipsoid:{
    org:{
@@ -244,10 +244,6 @@
         _this.controller(controller.get_Name(),controller.get_Implementation());
         return _this;
        },
-       "Module.ControllerName":function()
-       {
-        return"";
-       },
        "Module.Controllers":function(_this,controllers)
        {
         var enumerator;
@@ -309,7 +305,7 @@
         })));
        }
       },
-      WeatherwaxBaseController:Runtime.Class({
+      WeatherwaxController:Runtime.Class({
        FromSourceFilename:function(f)
        {
         var startIndex,ix,ct;
@@ -322,12 +318,6 @@
        New:function()
        {
         return Runtime.New(this,{});
-       }
-      }),
-      WeatherwaxController:Runtime.Class({},{
-       New:function()
-       {
-        return Runtime.New(this,WeatherwaxBaseController.New());
        }
       })
      }
@@ -359,13 +349,10 @@
   Seq=Runtime.Safe(WebSharper.Seq);
   Math=Runtime.Safe(Global.Math);
   Strings=Runtime.Safe(WebSharper.Strings);
-  WeatherwaxController=Runtime.Safe(Core.WeatherwaxController);
-  WeatherwaxBaseController=Runtime.Safe(Core.WeatherwaxBaseController);
   return Events=Runtime.Safe(Dependencies.Events);
  });
  Runtime.OnLoad(function()
  {
-  Runtime.Inherit(WeatherwaxController,WeatherwaxBaseController);
   Dependencies.UIRouter();
   Services.State();
   Services.Scope();
