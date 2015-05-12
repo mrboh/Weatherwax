@@ -13,4 +13,5 @@ type Master_HomeState () =
     override this.Name = this.FromSourceFilename __SOURCE_FILE__
     override this.Url = Some "^/"
     override this.ControllerType = Some typeof<HomeController>
+    override this.CustomData = Some <| [ ("hello", "world") ]
     override this.Template = Static <| Html "Home.html"

@@ -167,7 +167,7 @@ declare module ellipsoid {
                     Url: __ABBREV.__WebSharper.OptionProxy<string>;
                     UrlParametersToPassToTemplate: __ABBREV.__List.T<string>;
                     ControllerName: __ABBREV.__WebSharper.OptionProxy<string>;
-                    CustomData: __ABBREV.__WebSharper.OptionProxy<__ABBREV.__WebSharper.ObjectProxy>;
+                    CustomData: __ABBREV.__WebSharper.OptionProxy<__ABBREV.__List.T<any>>;
                 }
                 interface StateWhen {
                     UrlIn: string;

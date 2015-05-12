@@ -102,9 +102,9 @@ module Utilities =
                     )
             }
 
-    type StateManager<'TState,'TController when 'TState : equality and 'TController : equality> private () =
+    type StateManager<'TState when 'TState : equality> private () =
         inherit CommonObjectManager<WeatherwaxState<'TState>> ()
-        static let _instance = StateManager<'TState,'TController> ()
+        static let _instance = StateManager<'TState> ()
         static member Instance with get () = _instance
         member this.FindState state =
             this.AvailableObjects

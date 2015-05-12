@@ -66,7 +66,7 @@ and [<AbstractClass>] WeatherwaxBaseState () =
     abstract member Url: string option
     abstract member UrlParametersToPassToTemplate: string list
     abstract member ControllerType: Type option
-    abstract member CustomData: obj option
+    abstract member CustomData: (string * string) list option
 
     default this.Url = None
     default this.UrlParametersToPassToTemplate = []
@@ -91,7 +91,7 @@ type StateDefinition =
       Url: string option
       UrlParametersToPassToTemplate: string list
       ControllerName: string option
-      CustomData: obj option }
+      CustomData: (string * string) list option }
 
 type StateWhen =
     { UrlIn: string
